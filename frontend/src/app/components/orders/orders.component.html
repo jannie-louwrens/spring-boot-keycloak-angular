@@ -1,0 +1,35 @@
+<div class="container">
+  <div *ngFor="let customer of customers">
+    <span class="text-primary">
+      <i class="oi oi-basket h4"></i>
+      Orders for {{customer.firstName}} {{customer.lastName}}
+    </span>
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="bg-primary text-white">
+        <tr>
+          <th scope="col" class="w-25">Product</th>
+          <th scope="col" class="w-25">Product Catalog</th>
+          <th scope="col" class="text-center" style="width:100px;">Date</th>
+          <th scope="col" class="text-right" style="width:100px;">Quantity</th>
+          <th scope="col" class="text-right" style="width:100px;">Unit Price</th>
+          <th scope="col" class="text-right" style="width:100px;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="!!customer.orders && customer.orders.length == 0">
+          <td colspan="6" class="table-light">
+            <div class="text-center"><strong>No orders found</strong></div>
+          </td>
+        </tr>
+        <tr *ngFor="let order of customer.orders">
+          <td>{{order.product}}</td>
+          <td>{{order.productCatalog}}</td>
+          <td class="text-center">{{order.orderDate | date:'yyyy-MM-dd'}}</td>
+          <td class="text-right">{{order.quantity}}</td>
+          <td class="text-right">{{order.unitPrice | number:'1.2-2'}}</td>
+          <td class="text-right">{{order.quantity * order.unitPrice | number:'1.2-2'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

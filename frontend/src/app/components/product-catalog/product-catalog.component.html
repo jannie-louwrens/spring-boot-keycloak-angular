@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-sm-4">
+    <div class="card">
+      <h5 class="card-header text-white bg-primary">
+        Product Catalogs
+        <br><small class="text-light">Pick a category</small>
+      </h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action" style="cursor: pointer;" *ngFor="let productCatalog of productCatalogs" 
+          (click)="changeProductCatalog(productCatalog)">{{ productCatalog.name }}
+            <i class="oi oi-check float-right text-success" *ngIf="!!selectedProductCatalog && productCatalog.id === selectedProductCatalog.id"></i>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-sm-8">
+    <app-product  *ngIf="!!selectedProductCatalog"
+      [productCatalogId]="selectedProductCatalog.id" 
+      [productCatalogName]="selectedProductCatalog.name">
+    </app-product>
+  </div>
+</div>

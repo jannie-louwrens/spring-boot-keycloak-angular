@@ -1,0 +1,5 @@
+{
+    "/shop/api/*": {
+        "target": "http://localhost:8081"
+    }
+}

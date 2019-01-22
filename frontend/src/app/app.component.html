@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+  <a class="navbar-brand" routerLink="/">
+    <i class="oi oi-home text-white h2 align-middle"></i>
+    Shop
+  </a>
+  <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" 
+    aria-controls="navbarCollapse">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse " [collapse]="isCollapsed" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0" *ngIf="isLoggedIn">
+      <li class="nav-item" *ngIf="isAdministrator">
+        <a class="nav-link" routerLink="/orders" routerLinkActive="active">Orders</a>
+      </li>
+      <li class="nav-item" *ngIf="isAdministrator">
+        <a class="nav-link" routerLink="/customers" routerLinkActive="active">Customers</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="userProfile; else templateForNotLoggedIn">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/cart" routerLinkActive="active">
+          <i class="oi oi-cart text-white h3 align-middle"></i>
+          <span class="badge badge-pill badge-danger count">{{total$ | async }}</span>
+        </a>
+      </li>
+      <li class="nav-item dropdown" dropdown>
+          <a class="nav-link dropdown-toggle" dropdownToggle role="button" (click)="false">
+              <small class="text-white">Welcome, {{userProfile.firstName}} </small>
+              <span class="oi oi-person" aria-hidden="true"></span>
+          </a>
+          <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+              <div class="pl-3 font-weight-bold" role="menuitem">{{userProfile.username}}</div>
+              <div class="divider dropdown-divider"></div>
+              <a class="dropdown-item" (click)="doLogout()" style="cursor: pointer;">Log out</a>
+          </div>
+      </li>
+    </ul>
+    <ng-template #templateForNotLoggedIn>
+        <button type="button" class="btn btn-outline-primary ml-auto" (click)="doLogin()">Login</button>
+    </ng-template>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <router-outlet></router-outlet>
+</div>

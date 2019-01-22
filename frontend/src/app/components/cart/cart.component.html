@@ -1,0 +1,83 @@
+<div class="container" *ngIf="!!customer">
+    <div>
+        <span class="text-primary">
+            <i class="oi oi-basket h4"></i>
+            Shopping Basket
+        </span>
+    </div>
+    <table class="table table-bordered table-striped table-hover table-sm">
+        <thead class="bg-primary text-white">
+            <tr>
+                <th scope="col" class="w-25">Product</th>
+                <th scope="col" class="w-25">Product Catalog</th>
+                <th scope="col" class="text-center" style="width:100px;">Date</th>
+                <th scope="col" class="text-right" style="width:100px;">Quantity</th>
+                <th scope="col" class="text-right" style="width:100px;">Unit Price</th>
+                <th scope="col" class="text-right" style="width:100px;">Total</th>
+                <th scope="col" class="text-center" style="width:25px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngIf="!!customer.orders && customer.orders.length == 0">
+                <td colspan="7" class="table-light">
+                    <div class="text-center"><strong>No orders found</strong></div>
+                </td>
+            </tr>
+            <tr *ngFor="let order of customer.orders">
+                <td>{{order.product}}</td>
+                <td>{{order.productCatalog}}</td>
+                <td class="text-center">{{order.orderDate | date:'yyyy-MM-dd'}}</td>
+                <td class="text-right">{{order.quantity}}</td>
+                <td class="text-right">{{order.unitPrice | number:'1.2-2'}}</td>
+                <td class="text-right">{{order.quantity * order.unitPrice | number:'1.2-2'}}</td>
+                <td class="text-center">
+                    <i class="oi oi-pencil text-primary" tooltip="Edit Order" (click)="openEditOrderModal(editOrderTemplate, order)"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ng-template #editOrderTemplate>
+        <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Edit Order</h5>
+        </div>
+        <div class="modal-body">
+            <small class="text-danger">* required fields</small>
+            <form [formGroup]="orderForm">
+                <div class="form-group">
+                    <label for="name">Product</label>
+                    <input type="text" formControlName="product" class="form-control" id="product">
+                </div>
+                <div class="form-group">
+                    <label for="productCatalog">Product Catalog</label>
+                    <input type="text" formControlName="productCatalog" class="form-control" id="productCatalog">
+                </div>
+                <div class="form-group">
+                    <label for="orderDate">Date</label>
+                    <input type="text" formControlName="orderDate" class="form-control" id="orderDate">
+                </div>
+                <div class="form-group">
+                    <label for="unitPrice">Unit Price</label>
+                    <input type="text" formControlName="unitPrice" class="form-control" id="unitPrice">
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity<span class="text-danger">*</span></label>
+                    <input type="text" formControlName="quantity" class="form-control" id="quantity" required
+                        placeholder="0" [ngClass]="{ 'is-invalid': f.quantity.touched && f.quantity.errors }">
+                    <div *ngIf="f.quantity.touched && f.quantity.errors" class="invalid-feedback">
+                        <div *ngIf="f.quantity.errors.required">Please enter a quantity!</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="total">Total</label>
+                    <input type="text" value="{{f.unitPrice.value * f.quantity.value}}" class="form-control" id="total"
+                        disabled>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="onUpdateOrder()" [disabled]="this.orderForm.invalid">Update</button>
+                    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</div>
