@@ -8,39 +8,40 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse " [collapse]="isCollapsed" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto mt-2 mt-lg-0" *ngIf="isLoggedIn">
-      <li class="nav-item" *ngIf="isAdministrator">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0" *ngIf="(customer$ | async)?.isLoggedIn && (customer$ | async)?.isAdministrator">
+      <li class="nav-item">
         <a class="nav-link" routerLink="/orders" routerLinkActive="active">Orders</a>
       </li>
-      <li class="nav-item" *ngIf="isAdministrator">
+      <li class="nav-item">
         <a class="nav-link" routerLink="/customers" routerLinkActive="active">Customers</a>
       </li>
     </ul>
-    <ul class="navbar-nav ml-auto" *ngIf="userProfile; else templateForNotLoggedIn">
+    <ul class="navbar-nav ml-auto" *ngIf="(customer$ | async)?.isLoggedIn; else templateForNotLoggedIn">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/cart" routerLinkActive="active">
+        <a class="nav-link" routerLink="/cart" routerLinkActive="active" tooltip="My Orders" placement="bottom">
           <i class="oi oi-cart text-white h3 align-middle"></i>
-          <span class="badge badge-pill badge-danger count">{{total$ | async }}</span>
+          <span class="badge badge-pill badge-danger count">{{ (customer$ | async)?.orders?.length }}</span>
         </a>
       </li>
       <li class="nav-item dropdown" dropdown>
           <a class="nav-link dropdown-toggle" dropdownToggle role="button" (click)="false">
-              <small class="text-white">Welcome, {{userProfile.firstName}} </small>
+              <small class="text-white">Welcome, {{ (customer$ | async)?.firstName }} </small>
               <span class="oi oi-person" aria-hidden="true"></span>
           </a>
           <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
-              <div class="pl-3 font-weight-bold" role="menuitem">{{userProfile.username}}</div>
+              <div class="pl-3 font-weight-bold" role="menuitem">{{ (customer$ | async)?.username }}</div>
               <div class="divider dropdown-divider"></div>
               <a class="dropdown-item" (click)="doLogout()" style="cursor: pointer;">Log out</a>
           </div>
       </li>
     </ul>
     <ng-template #templateForNotLoggedIn>
-        <button type="button" class="btn btn-outline-primary ml-auto" (click)="doLogin()">Login</button>
+        <button type="button" class="btn btn-outline-light ml-auto" (click)="doLogin()">Login</button>
     </ng-template>
   </div>
 </nav>
 
 <div class="container-fluid">
+  <app-alert></app-alert>
   <router-outlet></router-outlet>
 </div>

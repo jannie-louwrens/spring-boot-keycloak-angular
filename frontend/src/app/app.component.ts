@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { KeycloakProfile } from 'keycloak-js';
-import { KeycloakService } from 'keycloak-angular';
 import { Observable } from 'rxjs';
-import { CartService } from './services/cart.service';
+import { CustomerInfo } from './models/customer.info';
+import { CustomerStore } from './stores/customer.store';
 
 @Component({
   selector: 'app-root',
@@ -20,34 +19,27 @@ import { CartService } from './services/cart.service';
 })
 export class AppComponent implements OnInit {
 
-  userProfile: KeycloakProfile;
-  isLoggedIn: boolean;
-  isAdministrator: boolean;
   isCollapsed = true;
-  total$: Observable<number>;
+  customer$: Observable<CustomerInfo>;
   
   constructor(
     private router: Router, 
-    private keycloakService: KeycloakService, 
-    private cartService: CartService) {}
-
-  async ngOnInit() {
-    if (await this.keycloakService.isLoggedIn()) {
-      this.userProfile = await this.keycloakService.loadUserProfile();
-      await this.keycloakService.isLoggedIn().then((value:boolean)=>{this.isLoggedIn = value});
-      this.isAdministrator = this.keycloakService.isUserInRole("admin");
-      this.cartService.loadItemsForUser(this.userProfile.username);
-      this.total$ = this.cartService.total$;
+    private customerStore: CustomerStore) {
+      this.customerStore.init();
     }
+
+  ngOnInit() {
+    this.customer$ = this.customerStore.getAll$();
   }
   
   doLogin(): void {
-    this.keycloakService.login();
+    this.customerStore.login();
   }
 
+  
   async doLogout() {
     await this.router.navigate(['/']);
-    await this.keycloakService.logout();
+    await this.customerStore.logout();
   }
 
 }

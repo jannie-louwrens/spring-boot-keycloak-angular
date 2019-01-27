@@ -5,14 +5,13 @@ import { DatePipe } from '@angular/common';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
-import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
-
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
-import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order';
-import { CartService } from 'src/app/services/cart.service';
+import { Observable } from 'rxjs';
+import { CustomerInfo } from 'src/app/models/customer.info';
+import { CustomerStore } from 'src/app/stores/customer.store';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-product',
@@ -30,20 +29,19 @@ export class ProductComponent implements OnChanges, OnInit {
   selectedProduct: Product;
   productForm: FormGroup;
   orderForm: FormGroup;
-  isAdministrator: boolean;
-  userProfile: KeycloakProfile;
+  customer$: Observable<CustomerInfo>;
 
   constructor(
     private productService: ProductService, 
-    private orderService: OrderService, 
     private formBuilder: FormBuilder,
     private modalService: BsModalService, 
-    private keycloakService: KeycloakService, 
-    private cartService: CartService) { }
+    private customerStore: CustomerStore,
+    private alertService: AlertService) { 
+      this.customerStore.init();
+    }
 
   async ngOnInit() {
-    this.userProfile = await this.keycloakService.loadUserProfile();
-    this.isAdministrator = this.keycloakService.isUserInRole("admin");
+    this.customer$ = this.customerStore.getAll$();
   }
 
   ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
@@ -56,8 +54,6 @@ export class ProductComponent implements OnChanges, OnInit {
     this.productService.getEffectiveProductsByProductCatalogOnDate(id, new Date(Date.now()))
       .subscribe(data => {
         this.products = data;
-      }, error => {
-        console.log(error);
       });
   }
 
@@ -124,8 +120,7 @@ export class ProductComponent implements OnChanges, OnInit {
       .subscribe(res => {
           this.getProductsByProductCatalog(this.productCatalogId);
           this.modalRef.hide();
-        }, (err) => {
-          console.log(err);
+          this.alertService.success(`Added ${product.name} product.`);
         });
   };
 
@@ -139,8 +134,7 @@ export class ProductComponent implements OnChanges, OnInit {
       .subscribe(res => {
           this.getProductsByProductCatalog(this.productCatalogId);
           this.modalRef.hide();
-        }, (err) => {
-          console.log(err);
+          this.alertService.success(`Updated ${product.name} product.`);
         });
   };
 
@@ -151,8 +145,7 @@ export class ProductComponent implements OnChanges, OnInit {
       this.getProductsByProductCatalog(this.productCatalogId);
       this.selectedProduct = {} as Product;
       this.modalRef.hide();
-    }, (err) => {
-      console.log(err);
+      this.alertService.success(`Deleted ${product.name} product.`);
     });
   }
 
@@ -162,13 +155,9 @@ export class ProductComponent implements OnChanges, OnInit {
       return;
     }
     let order = <Order>this.orderForm.getRawValue();
-    this.orderService.createOrder(this.userProfile.username, order)
-      .subscribe(order => {
-          this.modalRef.hide();
-          this.cartService.addItem(order);
-        }, (err) => {
-          console.log(err);
-        });
+    this.customerStore.addOrder(order);
+    this.modalRef.hide();
+    this.alertService.success(`Order placed for ${order.quantity} ${order.product}.`);
   };
 
 }

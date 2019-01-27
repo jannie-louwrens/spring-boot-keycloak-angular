@@ -6,6 +6,9 @@
         <br><small class="text-light">Pick a category</small>
       </h5>
       <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action" *ngIf="productCatalogs.length == 0">
+          <div class="text-center"><strong>No product catalogs found</strong></div>
+        </li>
         <li class="list-group-item list-group-item-action" style="cursor: pointer;" *ngFor="let productCatalog of productCatalogs" 
           (click)="changeProductCatalog(productCatalog)">{{ productCatalog.name }}
             <i class="oi oi-check float-right text-success" *ngIf="!!selectedProductCatalog && productCatalog.id === selectedProductCatalog.id"></i>

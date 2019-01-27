@@ -2,7 +2,7 @@
   <div class="card-header bg-primary">
     <h5 class="text-white float-left">{{ productCatalogName }} Products</h5>
     <button type="button" class="btn btn-light btn-sm float-right" 
-      (click)="openAddProductModal(addProductTemplate)" *ngIf="isAdministrator === true">Add Product</button>
+      (click)="openAddProductModal(addProductTemplate)" *ngIf="(customer$ | async)?.isAdministrator">Add Product</button>
   </div>
   <div class="card-body">
     <table class="table table-hover table-bordered">
@@ -15,6 +15,11 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="products.length == 0">
+          <td colspan="4" class="table-light">
+            <div class="text-center"><strong>No products found</strong></div>
+          </td>
+        </tr>
         <tr *ngFor="let product of products">
           <td>{{ product.name }}</td>
           <td>{{ product.description }}</td>
@@ -24,10 +29,10 @@
               <div class="col-1">
                 <i class="oi oi-cart text-primary" tooltip="Order Product" (click)="openCreateOrderModal(createOrderTemplate, product)"></i>
               </div>
-              <div class="col-1" *ngIf="isAdministrator === true">
+              <div class="col-1" *ngIf="(customer$ | async)?.isAdministrator">
                   <i class="oi oi-pencil text-info" tooltip="Edit Product" (click)="openEditProductModal(editProductTemplate, product)"></i>
               </div>
-              <div class="col-1" *ngIf="isAdministrator === true">
+              <div class="col-1" *ngIf="(customer$ | async)?.isAdministrator">
                   <i class="oi oi-trash text-danger" tooltip="Delete Product" (click)="openDeleteProductModal(deleteProductTemplate, product)"></i>
               </div>
             </div>

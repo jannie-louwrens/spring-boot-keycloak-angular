@@ -1,17 +1,15 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { flatMap, tap } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
-import { KeycloakService } from 'keycloak-angular';
-
-import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order';
-import { Customer } from '../../models/customer';
+import { CustomerInfo } from '../../models/customer.info';
+import { CustomerStore } from 'src/app/stores/customer.store';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-cart',
@@ -20,42 +18,21 @@ import { Customer } from '../../models/customer';
 })
 export class CartComponent implements OnInit {
 
-  customer: Customer;
   selectedOrder: Order;
   orderForm: FormGroup;
   modalRef: BsModalRef;
+  customer$: Observable<CustomerInfo>;
 
   constructor(
-    private orderService: OrderService, 
     private formBuilder: FormBuilder, 
     private modalService: BsModalService, 
-    private keycloakService: KeycloakService) { }
+    private customerStore: CustomerStore,
+    private alertService: AlertService) {
+      this.customerStore.init();
+     }
 
   ngOnInit() {
-    this.loadOrders();
-  }
-
-  loadOrders() {
-    from(this.keycloakService.loadUserProfile()).pipe(
-      tap(userProfile => {
-        this.customer = {
-          id: userProfile.id,
-          firstName: userProfile.firstName,
-          lastName: userProfile.lastName,
-          username: userProfile.username,
-          email: userProfile.email
-        } as Customer;
-      }),
-      flatMap(() => {
-        return this.orderService.getOrdersByCustomer(this.customer.username).pipe(
-          tap((orders: Order[]) => {
-            this.customer.orders = orders;
-          }, error => {
-            console.log(error);
-          })
-        )
-      })
-     ).subscribe();
+    this.customer$ = this.customerStore.getAll$();
   }
 
   openEditOrderModal(template: TemplateRef<any>, order: Order) {
@@ -71,6 +48,7 @@ export class CartComponent implements OnInit {
       'orderDate' : [{value: dtr, disabled: true}],
       'quantity' : [order.quantity, Validators.required]
     });
+    this.selectedOrder = order;
     this.modalRef = this.modalService.show(template, {ignoreBackdropClick: true});
   }
 
@@ -85,20 +63,9 @@ export class CartComponent implements OnInit {
       return;
     }
     let order = <Order>this.orderForm.getRawValue();
-    this.orderService.updateOrder(order.id, order)
-      .subscribe(res => {
-          // this.getCustomerOrders(this.customer.username);
-          this.orderService.getOrdersByCustomer(this.customer.username).pipe(
-            tap((orders: Order[]) => {
-              this.customer.orders = orders;
-            }, error => {
-              console.log(error);
-            })
-          ).subscribe();
-          this.modalRef.hide();
-        }, (err) => {
-          console.log(err);
-        });
+    this.customerStore.updateOrder(order);
+    this.modalRef.hide();
+    this.alertService.success(`${order.product} order quantity updated from ${this.selectedOrder.quantity} to ${order.quantity}.`);
   };
 
 }

@@ -19,8 +19,6 @@ export class ProductCatalogComponent implements OnInit {
     this.productCatalogService.getProductCatalogs()
       .subscribe(data => {
         this.productCatalogs = data;
-      }, error => {
-        console.log(error);
       });
   }
 

@@ -5,7 +5,7 @@ import { flatMap, tap } from 'rxjs/operators';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order';
 import { CustomerService } from '../../services/customer.service';
-import { Customer } from '../../models/customer';
+import { CustomerInfo } from '../../models/customer.info';
 
 @Component({
   selector: 'app-orders',
@@ -14,7 +14,7 @@ import { Customer } from '../../models/customer';
 })
 export class OrdersComponent implements OnInit {
 
-  customers: Customer[] = [];
+  customers: CustomerInfo[] = [];
 
   constructor(
     private orderService: OrderService, 
@@ -28,8 +28,6 @@ export class OrdersComponent implements OnInit {
         return this.orderService.getOrdersByCustomer(customer.username).pipe(
           tap((orders: Order[]) => {
             customer.orders = orders;
-          }, error => {
-            console.log(error);
           })
         )
       })

@@ -1,4 +1,4 @@
-<div class="container" *ngIf="!!customer">
+<div class="container" *ngIf="(customer$ | async) as customer">
     <div>
         <span class="text-primary">
             <i class="oi oi-basket h4"></i>
