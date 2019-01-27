@@ -23,7 +23,7 @@ public class ProductCatalogServiceImpl {
 	public ProductCatalog getProductCatalog(String id) throws DoesNotExistException {
 		Optional<ProductCatalog> productCatalog = productCatalogRepository.findById(id);
 		if (!productCatalog.isPresent()) {
-			throw new DoesNotExistException(id);
+			throw new DoesNotExistException("Product Catalog");
 		}
 		return productCatalog.get();
 	}

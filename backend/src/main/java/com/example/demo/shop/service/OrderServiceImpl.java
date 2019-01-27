@@ -23,7 +23,7 @@ public class OrderServiceImpl {
 	public Order getOrder(String id) throws DoesNotExistException {
 		Optional<Order> order = orderRepository.findById(id);
 		if (!order.isPresent()) {
-			throw new DoesNotExistException(id);
+			throw new DoesNotExistException("Order");
 		}
 		return order.get();
 	}

@@ -24,7 +24,7 @@ public class ProductServiceImpl {
 	public Product getProduct(String id) throws DoesNotExistException {
 		Optional<Product> product = productRepository.findById(id);
 		if (!product.isPresent()) {
-			throw new DoesNotExistException(id);
+			throw new DoesNotExistException("Product");
 		}
 		return product.get();
 	}

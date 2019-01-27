@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.shop.exceptions.DoesNotExistException;
 import com.example.demo.shop.model.CustomerInfo;
 import com.example.demo.shop.service.CustomerServiceImpl;
 
@@ -24,7 +25,7 @@ public class CustomerController {
 
 	@GetMapping("customers")
 	public List<CustomerInfo> searchForCustomers(@RequestParam("username") Optional<String> username,
-			KeycloakPrincipal<KeycloakSecurityContext> principal) {
+			KeycloakPrincipal<KeycloakSecurityContext> principal) throws DoesNotExistException {
 		if (username.isPresent()) {
 			return customerService.getCustomerByUsername(username.get(), principal);
 		}
