@@ -2,7 +2,7 @@
 
 ![Grocery Shop](images/shop.ico?raw=true "Grocery Shop")
 
-This is the source code for my article on [securing a Angular frontend and a Spring Boot backend using Keycloak](https://www.linkedin.com/pulse/securing-spring-boot-microservices-keycloak-part-3-jannie-louwrens/).
+This is the source code for my article on [how to securing a Angular frontend and a Spring Boot backend using Keycloak](https://www.linkedin.com/pulse/securing-java-rest-services-keycloak-part-4-jannie-louwrens/).
 
 ## Requirements
 
