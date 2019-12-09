@@ -25,11 +25,13 @@
       </li>
       <li class="nav-item dropdown" dropdown>
           <a class="nav-link dropdown-toggle" dropdownToggle role="button" (click)="false">
-              <small class="text-white">Welcome, {{ (customer$ | async)?.firstName }} </small>
               <span class="oi oi-person" aria-hidden="true"></span>
           </a>
           <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
-              <div class="pl-3 font-weight-bold" role="menuitem">{{ (customer$ | async)?.username }}</div>
+            <div class="text-center">
+              <div class="font-weight-bold" role="menuitem">{{ (customer$ | async)?.firstName }} {{ (customer$ | async)?.lastName }}</div>
+              <small class="text-secondary" role="menuitem">{{ (customer$ | async)?.username }}</small>
+            </div>
               <div class="divider dropdown-divider"></div>
               <a class="dropdown-item" (click)="doLogout()" style="cursor: pointer;">Log out</a>
           </div>
