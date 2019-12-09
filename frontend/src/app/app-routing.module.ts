@@ -8,12 +8,12 @@ import { AppAuthGuard } from './app-auth.guard';
 import { CartComponent } from './components/cart/cart.component';
 
 const routes: Routes = [
-  { path: 'productcatalog', component: ProductCatalogComponent },
+  { path: 'productcatalog', component: ProductCatalogComponent, canActivate: [AppAuthGuard]  },
   { path: 'customers', component: CustomersComponent, canActivate: [AppAuthGuard], data: { roles: ['admin'] } },
   { path: 'orders', component: OrdersComponent, canActivate: [AppAuthGuard], data: { roles: ['admin'] } },
   { path: 'customerorders/:username', component: CustomerOrdersComponent, canActivate: [AppAuthGuard], data: { roles: ['admin'] } },
   { path: 'cart', component: CartComponent, canActivate: [AppAuthGuard] },
-  { path: '', component: ProductCatalogComponent },
+  { path: '', redirectTo: '/productcatalog', pathMatch: 'full' },
   { path: '**', redirectTo: '/' }
 ];
 
