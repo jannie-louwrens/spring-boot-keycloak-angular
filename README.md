@@ -8,7 +8,7 @@ This is the source code for my article on [how to securing a Angular frontend an
 
   - Keycloak 8.0.1.Final
   - Java 8
-  - Spring Boot 2.0.7.RELEASE
+  - Spring Boot 2.2.2.RELEASE
   - Angular 8.2.14
   - Node.js 12.13.1
   - Yarn 1.19.2
