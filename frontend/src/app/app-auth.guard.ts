@@ -6,10 +6,10 @@ import { KeycloakService, KeycloakAuthGuard } from 'keycloak-angular';
   providedIn: 'root'
 })
 export class AppAuthGuard extends KeycloakAuthGuard {
-  
+
   constructor(
-    protected router: Router, 
-    protected keycloakAngular: KeycloakService) { 
+    protected router: Router,
+    protected keycloakAngular: KeycloakService) {
       super(router, keycloakAngular);
     }
 
@@ -27,7 +27,7 @@ export class AppAuthGuard extends KeycloakAuthGuard {
         if (!this.roles || this.roles.length === 0) {
           resolve(false);
         }
-        let granted: boolean = false;
+        let granted = false;
         for (const requiredRole of requiredRoles) {
           if (this.roles.indexOf(requiredRole) > -1) {
             granted = true;
