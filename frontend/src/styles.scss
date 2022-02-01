@@ -4,6 +4,6 @@
 @import "~bootstrap/scss/bootstrap";
 
 /* Importing Datepicker SCSS file. */
-@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+@import "/node_modules/ngx-bootstrap/datepicker/bs-datepicker.scss";
 
-@import '~open-iconic/font/css/open-iconic-bootstrap.min.css';
+@import "~open-iconic/font/css/open-iconic-bootstrap.min.css";
