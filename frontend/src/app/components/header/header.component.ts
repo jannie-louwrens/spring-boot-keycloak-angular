@@ -5,8 +5,8 @@ import { CustomerInfo } from "src/app/models/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
 
 @Component({
-  selector: "app-home",
-  templateUrl: "./home.component.html",
+  selector: "app-header",
+  templateUrl: "./header.component.html",
   styles: [
     `
       .count {
@@ -19,7 +19,7 @@ import { CustomerStore } from "src/app/stores/customer.store";
     `,
   ],
 })
-export class HomeComponent implements OnInit {
+export class HeaderComponent implements OnInit {
   isCollapsed = true;
   customer$: Observable<CustomerInfo>;
 
