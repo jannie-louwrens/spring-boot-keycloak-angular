@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable } from "rxjs";
+import { Subject } from "rxjs";
 import { Router, NavigationStart } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
 })
 export class AlertService {
-  private subject = new Subject<any>();
+  private messageSubject = new Subject<any>();
   private keepAfterRouteChange = false;
+
+  messageAction$ = this.messageSubject.asObservable();
 
   constructor(private router: Router) {
     // clear alert message on route change unless 'keepAfterRouteChange' flag is true
@@ -26,20 +28,22 @@ export class AlertService {
 
   success(message: string, keepAfterRouteChange = false) {
     this.keepAfterRouteChange = keepAfterRouteChange;
-    this.subject.next({ type: "success", text: message });
+    this.messageSubject.next({
+      text: message,
+      cssClass: "alert alert-success",
+    });
   }
 
   error(message: string, keepAfterRouteChange = false) {
     this.keepAfterRouteChange = keepAfterRouteChange;
-    this.subject.next({ type: "error", text: message });
-  }
-
-  getAlert(): Observable<any> {
-    return this.subject.asObservable();
+    this.messageSubject.next({
+      text: message,
+      cssClass: "alert alert-danger",
+    });
   }
 
   clear() {
     // clear by calling subject.next() without parameters
-    this.subject.next({});
+    this.messageSubject.next({});
   }
 }
