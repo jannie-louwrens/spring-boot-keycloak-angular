@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
   <a class="navbar-brand" routerLink="/">
-    <i class="oi oi-home text-white h2 align-middle"></i>
+    <cds-icon shape="store" size="lg"></cds-icon>
     Shop
   </a>
   <button
@@ -46,8 +46,8 @@
           tooltip="My Orders"
           placement="bottom"
         >
-          <i class="oi oi-cart text-white h3 align-middle"></i>
-          <span class="badge badge-pill badge-danger count">{{
+          <cds-icon shape="shopping-cart" size="lg"></cds-icon>
+          <span class="badge badge-danger count">{{
             (customer$ | async)?.orders?.length
           }}</span>
         </a>
@@ -59,7 +59,7 @@
           role="button"
           (click)="(false)"
         >
-          <span class="oi oi-person" aria-hidden="true"></span>
+          <cds-icon shape="user" size="md"></cds-icon>
         </a>
         <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
           <div class="text-center">

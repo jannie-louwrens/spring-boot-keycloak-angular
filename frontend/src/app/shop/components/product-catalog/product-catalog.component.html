@@ -21,13 +21,16 @@
           (click)="changeProductCatalog(productCatalog)"
         >
           {{ productCatalog.name }}
-          <i
-            class="oi oi-check float-end text-success"
+          <cds-icon
+            shape="check-circle"
+            status="success"
+            size="md"
+            class="float-end"
             *ngIf="
               !!selectedProductCatalog &&
               productCatalog.id === selectedProductCatalog.id
             "
-          ></i>
+          ></cds-icon>
         </li>
       </ul>
     </div>
