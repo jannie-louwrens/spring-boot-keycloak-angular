@@ -27,7 +27,10 @@
     "open-iconic": "^1.1.1",
     "rxjs": "~7.5.2",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "@clr/angular": "13.0.0",
+    "@clr/ui": "13.0.0",
+    "@cds/core": "^5.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.2.1",
