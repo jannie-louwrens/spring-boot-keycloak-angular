@@ -1,91 +1,69 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-  <a class="navbar-brand" routerLink="/">
-    <i class="oi oi-home text-white h2 align-middle"></i>
-    Shop
-  </a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    (click)="isCollapsed = !isCollapsed"
-    [attr.aria-expanded]="!isCollapsed"
-    aria-controls="navbarCollapse"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<clr-header class="header-4">
+  <div class="branding">
+    <a class="nav-link" routerLink="/">
+      <span class="title"
+        ><cds-icon shape="store" solid size="lg"></cds-icon>Shop</span
+      >
+    </a>
+  </div>
   <div
-    class="collapse navbar-collapse"
-    [collapse]="isCollapsed"
-    id="navbarCollapse"
+    class="header-nav"
+    [clr-nav-level]="1"
+    *ngIf="
+      (customer$ | async)?.isLoggedIn && (customer$ | async)?.isAdministrator
+    "
   >
-    <ul
-      class="navbar-nav me-auto mb-2 mb-lg-0"
-      *ngIf="
-        (customer$ | async)?.isLoggedIn && (customer$ | async)?.isAdministrator
-      "
+    <a class="nav-link nav-text" routerLink="/orders" routerLinkActive="active"
+      >Orders</a
     >
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/orders" routerLinkActive="active"
-          >Orders</a
-        >
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/customers" routerLinkActive="active"
-          >Customers</a
-        >
-      </li>
-    </ul>
-    <ul
-      class="navbar-nav ms-auto"
+    <a
+      class="nav-link nav-text"
+      routerLink="/customers"
+      routerLinkActive="active"
+      >Customers</a
+    >
+  </div>
+  <div class="header-actions">
+    <a class="nav-link nav-icon" routerLink="/cart" routerLinkActive="active">
+      <cds-icon
+        shape="shopping-cart"
+        size="lg"
+        *ngIf="!(customer$ | async)?.orders?.length"
+      ></cds-icon>
+      <cds-icon
+        shape="shopping-cart"
+        badge="danger"
+        size="lg"
+        *ngIf="(customer$ | async)?.orders?.length"
+      ></cds-icon>
+    </a>
+    <clr-dropdown
       *ngIf="(customer$ | async)?.isLoggedIn; else templateForNotLoggedIn"
     >
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/cart"
-          routerLinkActive="active"
-          tooltip="My Orders"
-          placement="bottom"
-        >
-          <i class="oi oi-cart text-white h3 align-middle"></i>
-          <span class="badge badge-pill badge-danger count">{{
-            (customer$ | async)?.orders?.length
-          }}</span>
-        </a>
-      </li>
-      <li class="nav-item dropdown" dropdown>
-        <a
-          class="nav-link dropdown-toggle"
-          dropdownToggle
-          role="button"
-          (click)="(false)"
-        >
-          <span class="oi oi-person" aria-hidden="true"></span>
-        </a>
-        <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
-          <div class="text-center">
-            <div class="font-weight-bold" role="menuitem">
-              {{ (customer$ | async)?.firstName }}
-              {{ (customer$ | async)?.lastName }}
-            </div>
-            <small class="text-secondary" role="menuitem">{{
-              (customer$ | async)?.username
-            }}</small>
-          </div>
-          <div class="divider dropdown-divider"></div>
+      <button clrDropdownTrigger>
+        <cds-icon shape="user" size="md"></cds-icon>
+        <cds-icon shape="angle" direction="down" size="sm"></cds-icon>
+      </button>
+      <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
+        <label class="dropdown-header"
+          >{{ (customer$ | async)?.firstName }}
+          {{ (customer$ | async)?.lastName }}
+        </label>
+        <label class="dropdown-header">
+          <small class="text-secondary">{{
+            (customer$ | async)?.username
+          }}</small>
+        </label>
+        <div class="dropdown-divider" role="separator"></div>
+        <div clrDropdownItem>
           <a class="dropdown-item" (click)="doLogout()" style="cursor: pointer"
             >Log out</a
           >
         </div>
-      </li>
-    </ul>
+      </clr-dropdown-menu>
+    </clr-dropdown>
     <ng-template #templateForNotLoggedIn>
-      <button
-        type="button"
-        class="btn btn-outline-light ml-auto"
-        (click)="doLogin()"
-      >
-        Login
-      </button>
+      <button class="btn btn-inverse" (click)="doLogin()">Login</button>
     </ng-template>
   </div>
-</nav>
+</clr-header>
