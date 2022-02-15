@@ -1,42 +1,36 @@
-<div class="row">
-  <div class="col-sm-4">
+<div class="clr-row">
+  <div class="clr-col-lg-4 clr-col-12">
     <div class="card">
-      <h5 class="card-header text-white bg-primary">
-        Product Catalogs
-        <br /><small class="text-light fs-6">Select a category</small>
-      </h5>
-      <ul class="list-group list-group-flush">
-        <li
-          class="list-group-item list-group-item-action"
-          *ngIf="productCatalogs.length == 0"
-        >
-          <div class="text-center">
+      <div class="card-block">
+        <h3 class="card-title">Product Catalog</h3>
+        <p class="card-text">Select a category</p>
+      </div>
+      <div class="card-block">
+        <ul class="list-unstyled">
+          <li *ngIf="productCatalogs.length == 0">
             <strong>No product catalogs found</strong>
-          </div>
-        </li>
-        <li
-          class="list-group-item list-group-item-action"
-          style="cursor: pointer"
-          *ngFor="let productCatalog of productCatalogs"
-          (click)="changeProductCatalog(productCatalog)"
-        >
-          {{ productCatalog.name }}
-          <cds-icon
-            shape="check-circle"
-            status="success"
-            size="md"
-            class="float-end"
-            *ngIf="
-              !!selectedProductCatalog &&
-              productCatalog.id === selectedProductCatalog.id
-            "
-          ></cds-icon>
-        </li>
-      </ul>
+          </li>
+          <li
+            style="cursor: pointer"
+            *ngFor="let productCatalog of productCatalogs"
+            (click)="changeProductCatalog(productCatalog)"
+          >
+            {{ productCatalog.name }}
+            <cds-icon
+              shape="check-circle"
+              status="success"
+              size="md"
+              *ngIf="
+                !!selectedProductCatalog &&
+                productCatalog.id === selectedProductCatalog.id
+              "
+            ></cds-icon>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-
-  <div class="col-sm-8">
+  <div class="clr-col-lg-8 clr-col-12">
     <app-product
       *ngIf="!!selectedProductCatalog"
       [productCatalogId]="selectedProductCatalog.id"

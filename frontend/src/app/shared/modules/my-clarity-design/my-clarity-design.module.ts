@@ -9,6 +9,8 @@ import {
   checkCircleIcon,
   shoppingBagIcon,
   pencilIcon,
+  angleIcon,
+  infoCircleIcon,
 } from "@cds/core/icon";
 
 @NgModule({
@@ -24,5 +26,7 @@ ClarityIcons.addIcons(
   shoppingCartIcon,
   checkCircleIcon,
   shoppingBagIcon,
-  pencilIcon
+  pencilIcon,
+  angleIcon,
+  infoCircleIcon
 );
