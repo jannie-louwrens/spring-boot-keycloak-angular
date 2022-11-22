@@ -4,14 +4,30 @@
 
 This is the source code for my article on [how to securing a Angular frontend and a Spring Boot backend using Keycloak](https://www.linkedin.com/pulse/securing-java-rest-services-keycloak-part-4-jannie-louwrens/).
 
-## Requirements
+## Orignal Requirements
 
-  - Keycloak 8.0.1.Final
+  - Keycloak 4.6.0.Final
   - Java 8
-  - Spring Boot 2.2.2.RELEASE
-  - Angular 13.2.1
-  - Node.js 16.13.2
-  - Yarn 1.22.17
+  - Spring Boot 2.0.7.RELEASE
+  - Angular 7.1.4
+  - Node.js 10.15.0
+  - Yarn 1.12.3
+
+### Updated Requirements (since blog post)
+  - 10 Dec 2019
+    - Keycloak 8.0.1.Final
+    - Spring Boot 2.2.2.RELEASE
+    - Angular 8.2.14
+    - Node.js 12.13.1
+    - Yarn 1.19.2
+  - 1 Feb 2022
+    - Angular 13.2.1
+    - Node.js 16.13.2
+    - Yarn 1.22.17
+  - 23 Apr 2022
+    - Angular 13.3.3
+    - Node.js 16.14.2
+    - Yarn 1.22.18
 
 ## Installing and Configuring Keycloak
 Download the standalone server distribution from the [Keycloak website](https://www.keycloak.org/), unpack it and start the server. Follow the [Getting Started](https://www.keycloak.org/docs/latest/getting_started/index.html#creating-the-admin-account) instructions to setup the administrator account.
@@ -34,7 +50,7 @@ In the **Valid Redirect URIs** field enter the two URLs: `http://localhost:8081/
 And in the **Web Origins** fields simply add a `*` (asterisk)
 #### 3. Create roles and assign permissions
 In the Keycloak administration console create two new roles, named: `user` and `admin`
-Edit the `admin` role and enable the **Composite Roles** flag and choose `realm-management` from the **Client Roles** droplist. 
+Edit the `admin` role and enable the **Composite Roles** flag and choose `realm-management` from the **Client Roles** droplist.
 Highlight the `view-users` option in the **Available Roles** block and then click on the "Add selected" button.
 #### 4. Create the following users:
 | Username | Password | First Name | Last Name | Email | Roles |
@@ -65,7 +81,7 @@ You will be presented with the Keycloak login screen:
 
 ![Keycloak Login](images/keycloak_login.png?raw=true "Keycloak Login")
 
-Enter one of the username and password combination created earlier to sign in. 
+Enter one of the username and password combination created earlier to sign in.
 
 After a successful login you will see the product catalog page:
 ![Landing Page](images/shopapp.png?raw=true "Landing Page")
