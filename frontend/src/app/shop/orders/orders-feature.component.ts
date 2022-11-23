@@ -1,11 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
+import { Component, NgModule, OnInit } from "@angular/core";
 import { from } from "rxjs";
 import { mergeMap, tap } from "rxjs/operators";
 
-import { OrderService } from "../../../services/order.service";
-import { Order } from "../../../models/order";
-import { CustomerService } from "../../../services/customer.service";
-import { CustomerInfo } from "../../../models/customer.info";
+import { OrderService } from "../../services/order.service";
+import { Order } from "../../models/order";
+import { CustomerService } from "../../services/customer.service";
+import { CustomerInfo } from "../../models/customer.info";
 
 @Component({
   selector: "app-orders",
@@ -79,3 +81,14 @@ export class OrdersComponent implements OnInit {
       .subscribe();
   }
 }
+
+@NgModule({
+  imports: [
+    CommonModule,
+    RouterModule.forChild([
+      { path: "", pathMatch: "full", component: OrdersComponent },
+    ]),
+  ],
+  declarations: [OrdersComponent],
+})
+export class OrdersFeatureModule {}

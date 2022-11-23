@@ -1,7 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, NgModule, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
 
-import { ProductCatalogService } from "../../../services/product-catalog.service";
-import { ProductCatalog } from "../../../models/product-catalog";
+import { ProductCatalogService } from "../../services/product-catalog.service";
+import { ProductCatalog } from "../../models/product-catalog";
+import { ProductFeatureModule } from "../product/product-feature.component";
 
 @Component({
   selector: "app-product-catalog",
@@ -66,3 +69,15 @@ export class ProductCatalogComponent implements OnInit {
     this.selectedProductCatalog = productCatalog;
   }
 }
+
+@NgModule({
+  imports: [
+    CommonModule,
+    RouterModule.forChild([
+      { path: "", pathMatch: "full", component: ProductCatalogComponent },
+    ]),
+    ProductFeatureModule,
+  ],
+  declarations: [ProductCatalogComponent],
+})
+export class ProductCatalogFeatureModule {}
