@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, NgModule, OnInit } from "@angular/core";
+import { Component, NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { ProductCatalogService } from "../../services/product-catalog.service";
-import { ProductCatalog } from "../../models/product-catalog";
+import { ProductCatalogService } from "./data-access/product-catalog.service";
+import { ProductCatalog } from "./data-access/product-catalog";
 import { ProductFeatureModule } from "../product/product-feature.component";
 
 @Component({
@@ -17,10 +17,13 @@ import { ProductFeatureModule } from "../product/product-feature.component";
             <p class="card-text">Select a category</p>
           </div>
           <div class="card-block">
-            <ul class="list-unstyled">
-              <li *ngIf="productCatalogs.length == 0">
-                <strong>No product catalogs found</strong>
-              </li>
+            <ul
+              class="list-unstyled"
+              *ngIf="
+                productCatalogs$ | async as productCatalogs;
+                else elseNoProductCatalogs
+              "
+            >
               <li
                 style="cursor: pointer"
                 *ngFor="let productCatalog of productCatalogs"
@@ -38,6 +41,9 @@ import { ProductFeatureModule } from "../product/product-feature.component";
                 ></cds-icon>
               </li>
             </ul>
+            <ng-template #elseNoProductCatalogs
+              ><strong>No product catalogs found</strong></ng-template
+            >
           </div>
         </div>
       </div>
@@ -52,18 +58,13 @@ import { ProductFeatureModule } from "../product/product-feature.component";
     </div>
   `,
   styles: [],
+  providers: [ProductCatalogService],
 })
-export class ProductCatalogComponent implements OnInit {
+export class ProductCatalogComponent {
   selectedProductCatalog: ProductCatalog;
-  productCatalogs: ProductCatalog[] = [];
+  readonly productCatalogs$ = this.productCatalogService.productCatalogs$;
 
   constructor(private productCatalogService: ProductCatalogService) {}
-
-  ngOnInit() {
-    this.productCatalogService.getProductCatalogs().subscribe((data) => {
-      this.productCatalogs = data;
-    });
-  }
 
   changeProductCatalog(productCatalog: ProductCatalog) {
     this.selectedProductCatalog = productCatalog;

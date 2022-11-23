@@ -6,10 +6,10 @@ import { Router, NavigationStart } from "@angular/router";
   providedIn: "root",
 })
 export class AlertService {
-  private messageSubject = new Subject<any>();
+  private messageSource = new Subject<any>();
   private keepAfterRouteChange = false;
 
-  messageAction$ = this.messageSubject.asObservable();
+  message$ = this.messageSource.asObservable();
 
   constructor(private router: Router) {
     // clear alert message on route change unless 'keepAfterRouteChange' flag is true
@@ -28,7 +28,7 @@ export class AlertService {
 
   success(message: string, keepAfterRouteChange = false) {
     this.keepAfterRouteChange = keepAfterRouteChange;
-    this.messageSubject.next({
+    this.messageSource.next({
       text: message,
       cssClass: "success",
     });
@@ -36,13 +36,13 @@ export class AlertService {
 
   error(message: string, keepAfterRouteChange = false) {
     this.keepAfterRouteChange = keepAfterRouteChange;
-    this.messageSubject.next({
+    this.messageSource.next({
       text: message,
       cssClass: "danger",
     });
   }
 
   clear() {
-    this.messageSubject.next(undefined);
+    this.messageSource.next(undefined);
   }
 }

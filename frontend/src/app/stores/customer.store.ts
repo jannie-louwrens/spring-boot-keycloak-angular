@@ -5,13 +5,11 @@ import { from } from "rxjs";
 import { KeycloakService } from "keycloak-angular";
 
 import { Store } from "./store";
-import { CustomerInfo } from "../models/customer.info";
-import { OrderService } from "../services/order.service";
-import { Order } from "../models/order";
+import { CustomerInfo } from "../shop/customers/data-access/customer.info";
+import { OrderService } from "../shop/orders/data-access/order.service";
+import { Order } from "../shop/orders/data-access/order";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class CustomerStore extends Store<CustomerInfo> {
   constructor(
     private keycloakService: KeycloakService,

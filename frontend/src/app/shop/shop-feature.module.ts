@@ -7,7 +7,6 @@ import { SharedModule } from "../shared/shared.module";
 import { TwoDigitDecimalNumberDirective } from "./directives/two-digit-decimal-number.directive";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CustomerStore } from "../stores/customer.store";
-import { StoreFrontFacadeService } from "./services/store-front-facade.service";
 
 @Component({
   selector: "app-store-front",
@@ -82,7 +81,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [DatePipe, CustomerStore, StoreFrontFacadeService],
+  providers: [DatePipe, CustomerStore],
   exports: [RouterModule],
 })
 export class ShopFeatureModule {}
