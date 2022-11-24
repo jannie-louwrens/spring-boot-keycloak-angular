@@ -1,8 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { CustomerInfo } from "../../features/customers/data-access/customer.info";
-import { CustomerStore } from "src/app/stores/customer.store";
 
 @Component({
   selector: "app-header",
@@ -18,10 +15,7 @@ import { CustomerStore } from "src/app/stores/customer.store";
       <div
         class="header-nav"
         [clr-nav-level]="1"
-        *ngIf="
-          (customer$ | async)?.isLoggedIn &&
-          (customer$ | async)?.isAdministrator
-        "
+        *ngIf="customer.isLoggedIn && customer.isAdministrator"
       >
         <a
           class="nav-link nav-text"
@@ -45,31 +39,27 @@ import { CustomerStore } from "src/app/stores/customer.store";
           <cds-icon
             shape="shopping-cart"
             size="lg"
-            *ngIf="!(customer$ | async)?.orders?.length"
+            *ngIf="!customer.orders?.length"
           ></cds-icon>
           <cds-icon
             shape="shopping-cart"
             badge="danger"
             size="lg"
-            *ngIf="(customer$ | async)?.orders?.length"
+            *ngIf="customer.orders?.length"
           ></cds-icon>
         </a>
-        <clr-dropdown
-          *ngIf="(customer$ | async)?.isLoggedIn; else templateForNotLoggedIn"
-        >
+        <clr-dropdown *ngIf="customer.isLoggedIn">
           <button clrDropdownTrigger>
             <cds-icon shape="user" size="md"></cds-icon>
             <cds-icon shape="angle" direction="down" size="sm"></cds-icon>
           </button>
           <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
             <label class="dropdown-header"
-              >{{ (customer$ | async)?.firstName }}
-              {{ (customer$ | async)?.lastName }}
+              >{{ customer.firstName }}
+              {{ customer.lastName }}
             </label>
             <label class="dropdown-header">
-              <small class="text-secondary">{{
-            (customer$ | async)?.username
-              }}</small>
+              <small class="text-secondary">{{ customer.username }}</small>
             </label>
             <div class="dropdown-divider" role="separator"></div>
             <div clrDropdownItem>
@@ -82,32 +72,18 @@ import { CustomerStore } from "src/app/stores/customer.store";
             </div>
           </clr-dropdown-menu>
         </clr-dropdown>
-        <ng-template #templateForNotLoggedIn>
-          <button class="btn btn-inverse" (click)="doLogin()">Login</button>
-        </ng-template>
       </div>
     </clr-header>
   `,
   styles: [],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
+  @Input() customer: CustomerInfo;
+  @Output() logout = new EventEmitter<boolean>();
+
   isCollapsed = true;
-  customer$: Observable<CustomerInfo>;
 
-  constructor(private router: Router, private customerStore: CustomerStore) {
-    this.customerStore.init();
-  }
-
-  ngOnInit() {
-    this.customer$ = this.customerStore.getAll$();
-  }
-
-  doLogin(): void {
-    this.customerStore.login();
-  }
-
-  async doLogout() {
-    await this.router.navigate(["/"]);
-    await this.customerStore.logout();
+  doLogout() {
+    this.logout.emit(true);
   }
 }

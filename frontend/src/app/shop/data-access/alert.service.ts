@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { Router, NavigationStart } from "@angular/router";
+import { Message } from "./message";
 
 @Injectable({
   providedIn: "root",
 })
 export class AlertService {
-  private messageSource = new Subject<any>();
+  private messageSource = new Subject<Message>();
   private keepAfterRouteChange = false;
 
   message$ = this.messageSource.asObservable();

@@ -8,7 +8,7 @@ import { DatePipe } from "@angular/common";
 import { Order } from "../orders/data-access/order";
 import { CustomerInfo } from "../customers/data-access/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
-import { AlertService } from "src/app/services/alert.service";
+import { AlertService } from "../../data-access/alert.service";
 import { SharedModule } from "src/app/shared/shared.module";
 
 @Component({

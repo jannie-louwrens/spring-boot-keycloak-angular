@@ -1,6 +1,6 @@
 import { Component, NgModule } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
-import { RouterModule, Routes } from "@angular/router";
+import { Router, RouterModule, Routes } from "@angular/router";
 import { AppAuthGuard } from "../app-auth.guard";
 
 import { SharedModule } from "../shared/shared.module";
@@ -10,13 +10,22 @@ import { CustomerStore } from "../stores/customer.store";
 import { AlertComponent } from "./ui/alert/alert.component";
 import { HeaderComponent } from "./ui/header/header.component";
 import { AuthModule } from "../auth/auth.module";
+import { AlertService } from "./data-access/alert.service";
+import { ShopFacadeService } from "./data-access/shop-facade.service";
 
 @Component({
   selector: "app-store-front",
   template: `
     <clr-main-container>
-      <app-alert></app-alert>
-      <app-header></app-header>
+      <app-alert
+        *ngIf="message$ | async as message"
+        [message]="message"
+      ></app-alert>
+      <app-header
+        *ngIf="customer$ | async as customer"
+        [customer]="customer"
+        (logout)="doLogout($event)"
+      ></app-header>
 
       <div class="content-container">
         <div class="content-area"><router-outlet></router-outlet></div>
@@ -25,7 +34,21 @@ import { AuthModule } from "../auth/auth.module";
   `,
   styles: [],
 })
-export class ShopComponent {}
+export class ShopComponent {
+  message$ = this.alertService.message$;
+  customer$ = this.shopFacadeService.customer$;
+
+  constructor(
+    private alertService: AlertService,
+    private shopFacadeService: ShopFacadeService,
+    private router: Router
+  ) {}
+
+  async doLogout(logout: boolean) {
+    await this.shopFacadeService.logout();
+    await this.router.navigate(["/"]);
+  }
+}
 
 const routes: Routes = [
   {
@@ -95,7 +118,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     AuthModule,
   ],
-  providers: [DatePipe, CustomerStore],
+  providers: [DatePipe, CustomerStore, ShopFacadeService],
   exports: [RouterModule],
 })
 export class ShopFeatureModule {}
