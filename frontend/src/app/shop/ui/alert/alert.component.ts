@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 
-import { AlertService } from "../../data-access/alert.service";
 import { Message } from "../../data-access/message";
 
 @Component({

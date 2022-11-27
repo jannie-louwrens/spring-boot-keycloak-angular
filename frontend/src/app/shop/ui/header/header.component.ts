@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { CustomerInfo } from "../../features/customers/data-access/customer.info";
+import { UserProfile } from "src/app/auth/data-access/user-profile";
 
 @Component({
   selector: "app-header",
@@ -15,7 +15,7 @@ import { CustomerInfo } from "../../features/customers/data-access/customer.info
       <div
         class="header-nav"
         [clr-nav-level]="1"
-        *ngIf="customer.isLoggedIn && customer.isAdministrator"
+        *ngIf="userProfile.isAdministrator"
       >
         <a
           class="nav-link nav-text"
@@ -39,27 +39,27 @@ import { CustomerInfo } from "../../features/customers/data-access/customer.info
           <cds-icon
             shape="shopping-cart"
             size="lg"
-            *ngIf="!customer.orders?.length"
+            *ngIf="customerOrderCount === 0"
           ></cds-icon>
           <cds-icon
             shape="shopping-cart"
             badge="danger"
             size="lg"
-            *ngIf="customer.orders?.length"
+            *ngIf="customerOrderCount > 0"
           ></cds-icon>
         </a>
-        <clr-dropdown *ngIf="customer.isLoggedIn">
+        <clr-dropdown>
           <button clrDropdownTrigger>
             <cds-icon shape="user" size="md"></cds-icon>
             <cds-icon shape="angle" direction="down" size="sm"></cds-icon>
           </button>
           <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
             <label class="dropdown-header"
-              >{{ customer.firstName }}
-              {{ customer.lastName }}
+              >{{ userProfile.firstName }}
+              {{ userProfile.lastName }}
             </label>
             <label class="dropdown-header">
-              <small class="text-secondary">{{ customer.username }}</small>
+              <small class="text-secondary">{{ userProfile.username }}</small>
             </label>
             <div class="dropdown-divider" role="separator"></div>
             <div clrDropdownItem>
@@ -78,7 +78,8 @@ import { CustomerInfo } from "../../features/customers/data-access/customer.info
   styles: [],
 })
 export class HeaderComponent {
-  @Input() customer: CustomerInfo;
+  @Input() userProfile: UserProfile;
+  @Input() customerOrderCount: number = 0;
   @Output() logout = new EventEmitter<boolean>();
 
   isCollapsed = true;
