@@ -12,7 +12,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AlertComponent } from "./ui/alert/alert.component";
 import { HeaderComponent } from "./ui/header/header.component";
 import { ShopFacadeService } from "./data-access/shop-facade.service";
-import { OrderService } from "./features/orders/data-access/order.service";
+import { OrderService } from "./features/admin/orders/data-access/order.service";
 
 @Component({
   selector: "app-store-front",
@@ -69,39 +69,21 @@ const routes: Routes = [
         canActivate: [AppAuthGuard],
       },
       {
-        path: "customers",
-        loadChildren: () =>
-          import("./features/customers/customers-feature.component").then(
-            (m) => m.CustomersFeatureModule
-          ),
-        canActivate: [AppAuthGuard],
-        data: { roles: ["admin"] },
-      },
-      {
-        path: "orders",
-        loadChildren: () =>
-          import("./features/orders/orders-feature.component").then(
-            (m) => m.OrdersFeatureModule
-          ),
-        canActivate: [AppAuthGuard],
-        data: { roles: ["admin"] },
-      },
-      {
-        path: "customerorders/:username",
-        loadChildren: () =>
-          import("./features/customer-orders/customer-orders.component").then(
-            (m) => m.CustomerOrdersFeatureModule
-          ),
-        canActivate: [AppAuthGuard],
-        data: { roles: ["admin"] },
-      },
-      {
         path: "cart",
         loadChildren: () =>
           import("./features/cart/cart-feature.component").then(
             (m) => m.CartFeatureModule
           ),
         canActivate: [AppAuthGuard],
+      },
+      {
+        path: "admin",
+        loadChildren: () =>
+          import("./features/admin/admin-feature.module").then(
+            (m) => m.AdminFeatureModule
+          ),
+        canActivate: [AppAuthGuard],
+        data: { roles: ["admin"] },
       },
     ],
   },

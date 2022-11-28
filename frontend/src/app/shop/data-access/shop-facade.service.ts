@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { switchMap, tap } from "rxjs";
 import { AuthFacadeService } from "src/app/auth/data-access/auth-facade.service";
-import { OrderService } from "../features/orders/data-access/order.service";
+import { OrderService } from "../features/admin/orders/data-access/order.service";
 import { AlertService } from "./alert.service";
 
 @Injectable()

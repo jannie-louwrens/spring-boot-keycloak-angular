@@ -34,7 +34,7 @@ import { Order } from "../orders/data-access/order";
               >0 Orders</span
             >
             <a
-              [routerLink]="['/customerorders/', customer.username]"
+              [routerLink]="['/admin/customerorders/', customer.username]"
               class="btn-link"
               *ngIf="!!customer.orders && customer.orders.length > 0"
             >

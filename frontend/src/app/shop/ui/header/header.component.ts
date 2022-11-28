@@ -25,13 +25,13 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
       >
         <a
           class="nav-link nav-text"
-          routerLink="/orders"
+          routerLink="/admin/orders"
           routerLinkActive="active"
           >Orders</a
         >
         <a
           class="nav-link nav-text"
-          routerLink="/customers"
+          routerLink="/admin/customers"
           routerLinkActive="active"
           >Customers</a
         >
