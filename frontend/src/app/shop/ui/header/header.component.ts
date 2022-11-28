@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from "@angular/core";
 import { UserProfile } from "src/app/auth/data-access/user-profile";
 
 @Component({
@@ -76,6 +82,7 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
     </clr-header>
   `,
   styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   @Input() userProfile: UserProfile;

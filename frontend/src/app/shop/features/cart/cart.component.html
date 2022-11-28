@@ -1,4 +1,4 @@
-<table class="table" *ngIf="customer$ | async as customer">
+<table class="table" *ngIf="ordersByCustomer$ | async as orders">
   <caption>
     <cds-icon shape="shopping-bag" size="lg"></cds-icon>
     Shopping Basket
@@ -15,12 +15,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngIf="!!customer.orders && customer.orders.length == 0">
+    <tr *ngIf="!!orders && orders.length == 0">
       <td colspan="7" class="table-light">
         <strong>No orders found</strong>
       </td>
     </tr>
-    <tr *ngFor="let order of customer.orders">
+    <tr *ngFor="let order of orders">
       <td class="left">{{ order.product }}</td>
       <td class="left">{{ order.productCatalog }}</td>
       <td>{{ order.orderDate | date: "yyyy-MM-dd" }}</td>

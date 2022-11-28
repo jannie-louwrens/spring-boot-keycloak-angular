@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, switchMap } from "rxjs";
+import { BehaviorSubject, Observable, switchMap } from "rxjs";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 
 import { Order } from "./order";
@@ -7,11 +7,9 @@ import { Order } from "./order";
 const headers = new HttpHeaders().set("Content-Type", "application/json");
 const apiUrl = "/shop/api/orders";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class OrderService {
-  private customerSubject = new Subject<string>();
+  private customerSubject = new BehaviorSubject<string>(null);
   private readonly customerSource$ = this.customerSubject.asObservable();
 
   constructor(private http: HttpClient) {}

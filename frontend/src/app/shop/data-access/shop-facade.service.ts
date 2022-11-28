@@ -23,7 +23,7 @@ export class ShopFacadeService {
     private authFacadeService: AuthFacadeService
   ) {}
 
-  logout = async (): Promise<void> => {
-    await this.authFacadeService.logout();
-  };
+  public logout(): void {
+    this.authFacadeService.logout();
+  }
 }

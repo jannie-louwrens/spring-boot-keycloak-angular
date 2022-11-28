@@ -20,6 +20,6 @@ export class AuthFacadeService {
   constructor(private keycloakService: KeycloakService) {}
 
   public logout = async (): Promise<void> => {
-    await this.keycloakService.logout();
+    await this.keycloakService.logout(location.origin);
   };
 }
