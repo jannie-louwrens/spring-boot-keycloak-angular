@@ -22,4 +22,8 @@ export class AuthFacadeService {
   public logout = async (): Promise<void> => {
     await this.keycloakService.logout(location.origin);
   };
+
+  public getLoginUsername(): string {
+    return this.keycloakService.getUsername();
+  }
 }

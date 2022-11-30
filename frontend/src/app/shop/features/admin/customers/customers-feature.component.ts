@@ -1,76 +1,65 @@
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { Component, NgModule, OnInit } from "@angular/core";
-import { from } from "rxjs";
-import { mergeMap, tap } from "rxjs/operators";
-
-import { CustomerService } from "./data-access/customer.service";
-import { CustomerInfo } from "./data-access/customer.info";
-import { OrderService } from "../orders/data-access/order.service";
-import { Order } from "../orders/data-access/order";
+import { Component, NgModule } from "@angular/core";
+import { CustomerFacadeService } from "./data-access/customer-facade.service";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @Component({
   selector: "app-customers",
   template: `
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col" class="left">Firstname</th>
-          <th scope="col" class="left">Lastname</th>
-          <th scope="col" style="width: 100px">Orders</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="!!customers && customers.length == 0">
-          <td colspan="3" class="table-light">
-            <strong>No customers found</strong>
-          </td>
-        </tr>
-        <tr *ngFor="let customer of customers">
-          <td class="left">{{ customer.firstName }}</td>
-          <td class="left">{{ customer.lastName }}</td>
-          <td>
-            <span *ngIf="!!customer.orders && customer.orders.length == 0"
-              >0 Orders</span
-            >
-            <a
-              [routerLink]="['/admin/customerorders/', customer.username]"
-              class="btn-link"
-              *ngIf="!!customer.orders && customer.orders.length > 0"
-            >
-              {{ customer.orders.length }} Orders
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <h3>Customers</h3>
+    <clr-datagrid *ngIf="customers$ | async as customers">
+      <clr-dg-column>Firstname</clr-dg-column>
+      <clr-dg-column>Lastname</clr-dg-column>
+      <clr-dg-column>Orders</clr-dg-column>
+
+      <clr-dg-row *clrDgItems="let customer of customers">
+        <clr-dg-cell>{{ customer.firstName }}</clr-dg-cell>
+        <clr-dg-cell>{{ customer.lastName }}</clr-dg-cell>
+        <clr-dg-cell>{{ customer.orders.length }}</clr-dg-cell>
+
+        <ng-container
+          ngProjectAs="clr-dg-row-detail"
+          *ngIf="customer.orders.length > 0"
+        >
+          <clr-dg-row-detail *clrIfExpanded>
+            <table class="table table-compact">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Order Date</th>
+                  <th>Quantity</th>
+                  <th>Unit Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of customer.orders">
+                  <td>{{ order.product }}</td>
+                  <td>{{ order.productCatalog }}</td>
+                  <td>{{ order.orderDate | date: "yyyy-MM-dd" }}</td>
+                  <td>{{ order.quantity }}</td>
+                  <td>{{ order.unitPrice | number: "1.2-2" }}</td>
+                  <td>
+                    {{ order.quantity * order.unitPrice | number: "1.2-2" }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </clr-dg-row-detail>
+        </ng-container>
+      </clr-dg-row>
+
+      <clr-dg-footer>{{ customers.length }} Customers</clr-dg-footer>
+    </clr-datagrid>
   `,
   styles: [],
 })
-export class CustomersComponent implements OnInit {
-  customers: CustomerInfo[] = [];
+export class CustomersComponent {
+  readonly customers$ = this.customerFacadeService.customersWithOrders$;
 
-  constructor(
-    private customerService: CustomerService,
-    private orderService: OrderService
-  ) {}
-
-  ngOnInit() {
-    this.customerService
-      .getCustomers()
-      .pipe(
-        tap((data) => (this.customers = data)),
-        mergeMap((customers) => from(customers)),
-        mergeMap((customer) => {
-          return this.orderService.getOrdersByCustomer(customer.username).pipe(
-            tap((orders: Order[]) => {
-              customer.orders = orders;
-            })
-          );
-        })
-      )
-      .subscribe();
-  }
+  constructor(private customerFacadeService: CustomerFacadeService) {}
 }
 
 @NgModule({
@@ -79,7 +68,9 @@ export class CustomersComponent implements OnInit {
     RouterModule.forChild([
       { path: "", pathMatch: "full", component: CustomersComponent },
     ]),
+    SharedModule,
   ],
   declarations: [CustomersComponent],
+  providers: [CustomerFacadeService],
 })
 export class CustomersFeatureModule {}

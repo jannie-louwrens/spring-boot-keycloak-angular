@@ -21,7 +21,7 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
       <div
         class="header-nav"
         [clr-nav-level]="1"
-        *ngIf="userProfile.isAdministrator"
+        *ngIf="userProfile && userProfile.isAdministrator"
       >
         <a
           class="nav-link nav-text"
@@ -36,7 +36,7 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
           >Customers</a
         >
       </div>
-      <div class="header-actions">
+      <div class="header-actions" [style.padding]="'0 1.2rem'">
         <a
           class="nav-link nav-icon"
           routerLink="/cart"
@@ -54,7 +54,7 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
             *ngIf="customerOrderCount > 0"
           ></cds-icon>
         </a>
-        <clr-dropdown>
+        <clr-dropdown *ngIf="userProfile">
           <button clrDropdownTrigger>
             <cds-icon shape="user" size="md"></cds-icon>
             <cds-icon shape="angle" direction="down" size="sm"></cds-icon>

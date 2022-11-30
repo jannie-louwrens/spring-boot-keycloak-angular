@@ -1,8 +1,10 @@
 import { Order } from "../../orders/data-access/order";
-import { KeycloakProfile } from "keycloak-js";
 
-export interface CustomerInfo extends KeycloakProfile {
+export interface CustomerInfo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
   orders?: Order[];
-  isLoggedIn?: boolean | false;
-  isAdministrator?: boolean | false;
 }
