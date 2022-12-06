@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, NgModule } from "@angular/core";
+import { Component, NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 import { SharedModule } from "src/app/shared/shared.module";
-import { Product } from "./data-access/product";
-import { ProductService } from "./data-access/product.service";
-import { StoreFacadeService } from "./data-access/store-facade.service";
+import { Product } from "../../data-access/product";
+import { ShopFacadeService } from "../../data-access/shop-facade.service";
+import { CartFacadeService } from "../cart/data-access/cart-facade.service";
 
 @Component({
   selector: "app-store",
@@ -18,7 +18,10 @@ import { StoreFacadeService } from "./data-access/store-facade.service";
             <div class="card-text">
               <clr-select-container>
                 <label>Filter by category:</label>
-                <select clrSelect (change)="onSelected($event.target.value)">
+                <select
+                  clrSelect
+                  (change)="onCategorySelection($event.target.value)"
+                >
                   <option value="">- Display All -</option>
                   <option
                     *ngFor="let category of vm.productCategories"
@@ -49,13 +52,13 @@ import { StoreFacadeService } from "./data-access/store-facade.service";
                     </p>
                     <p class="card-text">
                       <span class="p2">Unit Price: </span
-                      >{{ product.unitPrice | number: "1.2-2" }}
+                      >{{ product.unitPrice | number : "1.2-2" }}
                     </p>
                   </div>
                   <div class="card-footer">
                     <button
                       class="btn btn-sm btn-link"
-                      (click)="addToCart(product)"
+                      (click)="onAddToCart(product)"
                     >
                       Add to Cart
                     </button>
@@ -91,12 +94,10 @@ import { StoreFacadeService } from "./data-access/store-facade.service";
     </div>
   `,
   styles: [],
-  providers: [StoreFacadeService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoreComponent {
-  readonly productCategories$ = this.storeFacadeService.productCategories$;
-  readonly products$ = this.storeFacadeService.products$;
+  readonly productCategories$ = this.shopFacadeService.productCategories$;
+  readonly products$ = this.shopFacadeService.products$;
 
   vm$ = combineLatest([this.products$, this.productCategories$]).pipe(
     map(([products, productCategories]) => {
@@ -104,14 +105,17 @@ export class StoreComponent {
     })
   );
 
-  constructor(private storeFacadeService: StoreFacadeService) {}
+  constructor(
+    private shopFacadeService: ShopFacadeService,
+    private cartFacadeService: CartFacadeService
+  ) {}
 
-  onSelected(productCategoryId: string): void {
-    this.storeFacadeService.changeProductCategoryId(productCategoryId);
+  onCategorySelection(productCategoryId: string): void {
+    this.shopFacadeService.changeProductCategoryId(productCategoryId);
   }
 
-  addToCart(product: Product) {
-    this.storeFacadeService.addToCart(product);
+  onAddToCart(product: Product) {
+    this.cartFacadeService.addToCart(product);
   }
 }
 
@@ -123,7 +127,6 @@ export class StoreComponent {
     ]),
     SharedModule,
   ],
-  providers: [ProductService],
   declarations: [StoreComponent],
 })
 export class StoreFeatureModule {}

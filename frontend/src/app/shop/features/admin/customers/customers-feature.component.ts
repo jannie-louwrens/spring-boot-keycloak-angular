@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { Component, NgModule } from "@angular/core";
-import { CustomerFacadeService } from "./data-access/customer-facade.service";
 import { SharedModule } from "src/app/shared/shared.module";
+import { CustomerFacadeService } from "./data-access/customer-facade.service";
 
 @Component({
   selector: "app-customers",

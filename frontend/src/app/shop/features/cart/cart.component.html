@@ -2,13 +2,13 @@
   <div class="clr-col-12">
     <div class="card">
       <h3 class="card-header">Shopping Cart</h3>
-      <div class="card-block" *ngIf="ordersByCustomer$ | async as orders">
+      <div class="card-block" *ngIf="itemsInCart$ | async as orders">
         <div class="clr-row">
           <div class="clr-col-lg-8 clr-col-12">
             <div class="card-text">
               <div class="card-block" *ngFor="let order of orders">
                 <div class="card-text">
-                  <div class="clr-row clr-align-items-center">
+                  <div class="clr-row clr-align-items-end">
                     <div class="clr-col-lg-5 clr-col-12">
                       <div class="clr-row">
                         <h6 class="card-title">{{ order.productCatalog }}</h6>
@@ -16,7 +16,27 @@
                       <div class="clr-row">{{ order.product }}</div>
                     </div>
                     <div class="clr-col-lg-2 clr-col-12">
-                      <div class="clr-row">{{ order.quantity }}</div>
+                      <div class="clr-row clr-align-items-end">
+                        <span class="clr-col-4"
+                          ><button
+                            type="button"
+                            class="btn btn-icon"
+                            [disabled]="order.quantity === 1"
+                            (click)="onDecreaseQuantity(order)"
+                          >
+                            <cds-icon shape="minus"></cds-icon></button
+                        ></span>
+                        <span class="clr-col-2">{{ order.quantity
+                        }}</span>
+                        <span class="clr-col-4"
+                          ><button
+                            type="button"
+                            class="btn btn-icon"
+                            (click)="onIncreaseQuantity(order)"
+                          >
+                            <cds-icon shape="plus"></cds-icon></button
+                        ></span>
+                      </div>
                     </div>
                     <div class="clr-col-lg-2 clr-col-12">
                       <div class="clr-row">

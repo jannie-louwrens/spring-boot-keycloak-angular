@@ -5,7 +5,9 @@ import { combineLatest, map, shareReplay } from "rxjs";
 import { Product } from "./product";
 import { ProductCategory } from "./product-category";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class ProductService {
   private productCategoryApiUrl = "/shop/api/productcatalogs";
   private productApiUrl = "/shop/api/products";

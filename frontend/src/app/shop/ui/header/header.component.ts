@@ -21,13 +21,13 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
           <cds-icon
             shape="shopping-cart"
             size="lg"
-            *ngIf="customerOrderCount === 0"
+            *ngIf="itemsInCartCount === 0"
           ></cds-icon>
           <cds-icon
             shape="shopping-cart"
             badge="danger"
             size="lg"
-            *ngIf="customerOrderCount > 0"
+            *ngIf="itemsInCartCount > 0"
           ></cds-icon>
         </a>
       </div>
@@ -37,7 +37,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  @Input() customerOrderCount: number = 0;
+  @Input() itemsInCartCount: number = 0;
 
   isCollapsed = true;
 }

@@ -4,7 +4,6 @@ import { Component, NgModule } from "@angular/core";
 
 import { SharedModule } from "src/app/shared/shared.module";
 import { CartFacadeService } from "./data-access/cart-facade.service";
-import { startWith } from "rxjs";
 import { Order } from "../admin/orders/data-access/order";
 
 @Component({
@@ -13,13 +12,25 @@ import { Order } from "../admin/orders/data-access/order";
   styles: [],
 })
 export class CartComponent {
-  readonly ordersByCustomer$ = this.cartFacadeService.ordersByCustomer$.pipe(
-    startWith([])
-  );
+  itemsInCart$ = this.cartFacadeService.cartWithCRUD$;
 
   constructor(private cartFacadeService: CartFacadeService) {}
 
-  onDeleteOrder(order: Order): void {}
+  onDeleteOrder(order: Order): void {
+    console.log(
+      "🚀 ~ file: cart-feature.component.ts:20 ~ CartComponent ~ onDeleteOrder ~ method not implemented"
+    );
+  }
+
+  onDecreaseQuantity(order: Order): void {
+    const updatedOrder = { ...order, quantity: --order.quantity };
+    this.cartFacadeService.updateItem(updatedOrder);
+  }
+
+  onIncreaseQuantity(order: Order): void {
+    const updatedOrder = { ...order, quantity: ++order.quantity };
+    this.cartFacadeService.updateItem(updatedOrder);
+  }
 
   calcItems(orders: Order[]): number {
     return orders.reduce((tally, order) => tally + order.quantity, 0);
@@ -42,6 +53,5 @@ export class CartComponent {
     SharedModule,
   ],
   declarations: [CartComponent],
-  providers: [CartFacadeService],
 })
 export class CartFeatureModule {}
