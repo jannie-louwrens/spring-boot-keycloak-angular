@@ -4,10 +4,10 @@ import { Component, NgModule, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { mergeMap, tap } from "rxjs/operators";
 
-import { OrderService } from "../orders/data-access/order.service";
-import { Order } from "../orders/data-access/order";
-import { CustomerService } from "../customers/data-access/customer.service";
-import { CustomerInfo } from "../customers/data-access/customer.info";
+import { OrderService } from "..//../services/order.service";
+import { Order } from "../../models/order";
+import { CustomerService } from "../../services/customer.service";
+import { CustomerInfo } from "../../models/customer.info";
 
 @Component({
   selector: "app-customer-orders",

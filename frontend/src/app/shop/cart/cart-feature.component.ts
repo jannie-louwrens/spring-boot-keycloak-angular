@@ -5,8 +5,8 @@ import { Observable } from "rxjs";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DatePipe } from "@angular/common";
 
-import { Order } from "../orders/data-access/order";
-import { CustomerInfo } from "../customers/data-access/customer.info";
+import { Order } from "../../models/order";
+import { CustomerInfo } from "../../models/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
 import { AlertService } from "src/app/services/alert.service";
 import { SharedModule } from "src/app/shared/shared.module";

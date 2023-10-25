@@ -19,7 +19,7 @@ import { AlertService } from "src/app/services/alert.service";
   styles: [],
 })
 export class AlertComponent {
-  message$ = this.alertService.message$;
+  message$ = this.alertService.messageAction$;
 
   constructor(private alertService: AlertService) {}
 }

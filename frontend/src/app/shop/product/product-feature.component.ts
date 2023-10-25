@@ -9,11 +9,11 @@ import {
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { CommonModule, DatePipe } from "@angular/common";
 
-import { ProductService } from "./data-access/product.service";
-import { Product } from "./data-access/product";
-import { Order } from "../orders/data-access/order";
+import { ProductService } from "../../services/product.service";
+import { Product } from "../../models/product";
+import { Order } from "../../models/order";
 import { Observable } from "rxjs";
-import { CustomerInfo } from "../customers/data-access/customer.info";
+import { CustomerInfo } from "src/app/models/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
 import { AlertService } from "src/app/services/alert.service";
 import { SharedModule } from "src/app/shared/shared.module";
@@ -22,7 +22,7 @@ import { SharedModule } from "src/app/shared/shared.module";
   selector: "app-product",
   templateUrl: "./product.component.html",
   styles: [],
-  providers: [ProductService, DatePipe],
+  providers: [DatePipe],
 })
 export class ProductComponent implements OnChanges, OnInit {
   @Input() productCatalogId: string;
