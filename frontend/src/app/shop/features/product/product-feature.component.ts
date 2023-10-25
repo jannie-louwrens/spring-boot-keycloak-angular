@@ -176,6 +176,5 @@ export class ProductComponent implements OnChanges, OnInit {
   imports: [CommonModule, SharedModule],
   declarations: [ProductComponent],
   exports: [ProductComponent],
-  providers: [CustomerStore],
 })
 export class ProductFeatureModule {}

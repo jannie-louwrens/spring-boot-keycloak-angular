@@ -1,16 +1,16 @@
 import { Component, NgModule } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
 import { Router, RouterModule, Routes } from "@angular/router";
-import { combineLatest, map } from "rxjs";
-
-import { AuthModule } from "../auth/auth.module";
-import { AppAuthGuard } from "../auth/app-auth.guard";
+import { AppAuthGuard } from "../app-auth.guard";
 
 import { SharedModule } from "../shared/shared.module";
 import { TwoDigitDecimalNumberDirective } from "./ui/directives/two-digit-decimal-number.directive";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CustomerStore } from "../stores/customer.store";
 import { AlertComponent } from "./ui/alert/alert.component";
 import { HeaderComponent } from "./ui/header/header.component";
+import { AuthModule } from "../auth/auth.module";
+import { AlertService } from "./data-access/alert.service";
 import { ShopFacadeService } from "./data-access/shop-facade.service";
 
 @Component({
@@ -18,13 +18,12 @@ import { ShopFacadeService } from "./data-access/shop-facade.service";
   template: `
     <clr-main-container>
       <app-alert
-        *ngIf="notificationMessage$ | async as message"
+        *ngIf="message$ | async as message"
         [message]="message"
       ></app-alert>
       <app-header
-        *ngIf="vm$ | async as vm"
-        [userProfile]="vm.userProfile"
-        [customerOrderCount]="vm.customerOrderCount"
+        *ngIf="customer$ | async as customer"
+        [customer]="customer"
         (logout)="doLogout($event)"
       ></app-header>
 
@@ -36,18 +35,11 @@ import { ShopFacadeService } from "./data-access/shop-facade.service";
   styles: [],
 })
 export class ShopComponent {
-  readonly notificationMessage$ = this.shopFacadeService.notificationMessage$;
-  readonly userProfile$ = this.shopFacadeService.userProfile$;
-  readonly customerOrderCount$ = this.shopFacadeService.customerOrderCount$;
-
-  vm$ = combineLatest([this.userProfile$, this.customerOrderCount$]).pipe(
-    map(([userProfile, customerOrderCount]) => ({
-      userProfile,
-      customerOrderCount,
-    }))
-  );
+  message$ = this.alertService.message$;
+  customer$ = this.shopFacadeService.customer$;
 
   constructor(
+    private alertService: AlertService,
     private shopFacadeService: ShopFacadeService,
     private router: Router
   ) {}
@@ -126,7 +118,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     AuthModule,
   ],
-  providers: [DatePipe, ShopFacadeService],
+  providers: [DatePipe, CustomerStore, ShopFacadeService],
   exports: [RouterModule],
 })
 export class ShopFeatureModule {}

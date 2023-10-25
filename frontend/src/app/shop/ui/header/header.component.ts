@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { UserProfile } from "src/app/auth/data-access/user-profile";
+import { CustomerInfo } from "../../features/customers/data-access/customer.info";
 
 @Component({
   selector: "app-header",
@@ -15,7 +15,7 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
       <div
         class="header-nav"
         [clr-nav-level]="1"
-        *ngIf="userProfile.isAdministrator"
+        *ngIf="customer.isLoggedIn && customer.isAdministrator"
       >
         <a
           class="nav-link nav-text"
@@ -39,27 +39,27 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
           <cds-icon
             shape="shopping-cart"
             size="lg"
-            *ngIf="customerOrderCount === 0"
+            *ngIf="!customer.orders?.length"
           ></cds-icon>
           <cds-icon
             shape="shopping-cart"
             badge="danger"
             size="lg"
-            *ngIf="customerOrderCount > 0"
+            *ngIf="customer.orders?.length"
           ></cds-icon>
         </a>
-        <clr-dropdown>
+        <clr-dropdown *ngIf="customer.isLoggedIn">
           <button clrDropdownTrigger>
             <cds-icon shape="user" size="md"></cds-icon>
             <cds-icon shape="angle" direction="down" size="sm"></cds-icon>
           </button>
           <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
             <label class="dropdown-header"
-              >{{ userProfile.firstName }}
-              {{ userProfile.lastName }}
+              >{{ customer.firstName }}
+              {{ customer.lastName }}
             </label>
             <label class="dropdown-header">
-              <small class="text-secondary">{{ userProfile.username }}</small>
+              <small class="text-secondary">{{ customer.username }}</small>
             </label>
             <div class="dropdown-divider" role="separator"></div>
             <div clrDropdownItem>
@@ -78,8 +78,7 @@ import { UserProfile } from "src/app/auth/data-access/user-profile";
   styles: [],
 })
 export class HeaderComponent {
-  @Input() userProfile: UserProfile;
-  @Input() customerOrderCount: number = 0;
+  @Input() customer: CustomerInfo;
   @Output() logout = new EventEmitter<boolean>();
 
   isCollapsed = true;
