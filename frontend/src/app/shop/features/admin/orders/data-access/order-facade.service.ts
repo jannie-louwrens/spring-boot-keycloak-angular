@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { combineLatest, map, tap } from "rxjs";
-import { OrderService } from "./order.service";
 import { CustomerService } from "../../customers/data-access/customer.service";
 import { Order } from "./order";
+import { OrderService } from "./order.service";
 
 @NgModule()
 export class OrderFacadeService {

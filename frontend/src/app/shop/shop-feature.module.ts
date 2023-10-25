@@ -3,6 +3,8 @@ import { CommonModule, DatePipe } from "@angular/common";
 import { RouterModule, Routes } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
+import { combineLatest, map, startWith } from "rxjs";
+
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HttpErrorInterceptor } from "./interceptors/http-error.interceptor";
 
@@ -13,9 +15,8 @@ import { AppAuthGuard } from "../auth/app-auth.guard";
 import { AlertComponent } from "./ui/alert/alert.component";
 import { HeaderComponent } from "./ui/header/header.component";
 import { ShopFacadeService } from "./data-access/shop-facade.service";
+import { OrderService } from "./features/admin/orders/data-access/order.service";
 import { AlertService } from "./data-access/alert.service";
-import { CartFacadeService } from "./features/cart/data-access/cart-facade.service";
-import { switchMap } from "rxjs";
 
 @Component({
   selector: "app-store-front",
@@ -25,7 +26,9 @@ import { switchMap } from "rxjs";
         *ngIf="notificationMessage$ | async as message"
         [message]="message"
       ></app-alert>
-      <app-header [itemsInCartCount]="itemsInCartCount$ | async"></app-header>
+      <app-header
+        [customerOrderCount]="customerOrderCount$ | async"
+      ></app-header>
 
       <div class="content-container">
         <main class="content-area"><router-outlet></router-outlet></main>
@@ -74,7 +77,7 @@ import { switchMap } from "rxjs";
             </clr-vertical-nav-group-children>
           </clr-vertical-nav-group>
 
-          <a clrVerticalNavLink (click)="doLogout()"
+          <a clrVerticalNavLink (click)="doLogout(true)"
             ><cds-icon shape="logout" clrVerticalNavIcon></cds-icon> Logout
           </a>
         </clr-vertical-nav>
@@ -85,17 +88,21 @@ import { switchMap } from "rxjs";
 })
 export class ShopComponent {
   readonly notificationMessage$ = this.shopFacadeService.notificationMessage$;
-  readonly userProfile$ = this.shopFacadeService.loadUserProfile$;
-  itemsInCartCount$ = this.cartFacadeService.cartWithCRUD$.pipe(
-    switchMap(async (items) => items.length)
-  );
+  readonly userProfile$ = this.shopFacadeService.userProfile$;
+  readonly customerOrderCount$ = this.shopFacadeService.customerOrderCount$;
 
-  constructor(
-    private shopFacadeService: ShopFacadeService,
-    private cartFacadeService: CartFacadeService
-  ) {}
+  vm$ = combineLatest([this.userProfile$, this.customerOrderCount$])
+    .pipe(
+      map(([userProfile, customerOrderCount]) => ({
+        userProfile,
+        customerOrderCount,
+      }))
+    )
+    .pipe(startWith({}));
 
-  doLogout(): void {
+  constructor(private shopFacadeService: ShopFacadeService) {}
+
+  doLogout(logout: boolean) {
     this.shopFacadeService.logout();
   }
 }
@@ -151,6 +158,8 @@ const routes: Routes = [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     DatePipe,
     AlertService,
+    OrderService,
+    ShopFacadeService,
   ],
   exports: [RouterModule],
 })

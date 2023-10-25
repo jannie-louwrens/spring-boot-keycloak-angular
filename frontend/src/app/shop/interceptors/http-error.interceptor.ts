@@ -9,11 +9,11 @@ import {
 } from "@angular/common/http";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { AlertService } from "../data-access/alert.service";
+import { ShopFacadeService } from "../data-access/shop-facade.service";
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(private alertService: AlertService) {}
+  constructor(private shopFacadeService: ShopFacadeService) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -21,7 +21,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((response: HttpErrorResponse) => {
-        this.alertService.error(`${response.status}: ${response.message}`);
+        this.shopFacadeService.showErrorMessage(
+          `${response.status}: ${response.message}`
+        );
         return throwError(() => response.message);
       })
     );

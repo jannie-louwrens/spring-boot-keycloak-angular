@@ -1,14 +1,11 @@
 import { Injectable } from "@angular/core";
 import { KeycloakService } from "keycloak-angular";
-import { BehaviorSubject, from, map, tap } from "rxjs";
+import { from, map } from "rxjs";
 import { UserProfile } from "./user-profile";
 
 @Injectable()
 export class AuthFacadeService {
-  private userProfileSubject = new BehaviorSubject<UserProfile>(null);
-  public readonly userProfile$ = this.userProfileSubject.asObservable();
-
-  public readonly loadUserProfile$ = from(
+  public readonly userProfile$ = from(
     this.keycloakService.loadUserProfile()
   ).pipe(
     map(
@@ -17,8 +14,7 @@ export class AuthFacadeService {
           ...userProfile,
           isAdministrator: this.keycloakService.isUserInRole("admin"),
         } as UserProfile)
-    ),
-    tap((user) => this.userProfileSubject.next(user))
+    )
   );
 
   constructor(private keycloakService: KeycloakService) {}

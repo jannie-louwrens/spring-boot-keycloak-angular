@@ -1,44 +1,33 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, combineLatest, map } from "rxjs";
+import { switchMap, tap } from "rxjs";
 import { AuthFacadeService } from "src/app/auth/data-access/auth-facade.service";
+import { OrderService } from "../features/admin/orders/data-access/order.service";
 import { AlertService } from "./alert.service";
-import { ProductService } from "./product.service";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class ShopFacadeService {
   public readonly notificationMessage$ = this.alertService.message$;
-  public readonly loadUserProfile$ = this.authFacadeService.loadUserProfile$;
-  public readonly productCategories$ = this.productService.productCategories$;
-
-  private categorySelectedSubject = new BehaviorSubject<string>(null);
-  categorySelectedAction$ = this.categorySelectedSubject.asObservable();
-
-  public readonly products$ = combineLatest([
-    this.productService.productsWithCategory$,
-    this.categorySelectedAction$,
-  ]).pipe(
-    map(([products, selectedCategoryId]) =>
-      products.filter((product) =>
-        selectedCategoryId
-          ? product.productCatalogId === selectedCategoryId
-          : true
-      )
+  public readonly userProfile$ = this.authFacadeService.userProfile$.pipe(
+    tap((userProfile) =>
+      this.orderService.changeSelectedCustomerId(userProfile.username)
     )
   );
+  public readonly customerOrderCount$ =
+    this.orderService.ordersByCustomer$.pipe(
+      switchMap(async (orders) => orders.length)
+    );
 
-  public changeProductCategoryId(productCategoryId: string): void {
-    this.categorySelectedSubject.next(productCategoryId);
-  }
+  constructor(
+    private alertService: AlertService,
+    private orderService: OrderService,
+    private authFacadeService: AuthFacadeService
+  ) {}
 
   public logout(): void {
     this.authFacadeService.logout();
   }
 
-  constructor(
-    private alertService: AlertService,
-    private authFacadeService: AuthFacadeService,
-    private productService: ProductService
-  ) {}
+  public showErrorMessage(message: string): void {
+    this.alertService.error(message);
+  }
 }

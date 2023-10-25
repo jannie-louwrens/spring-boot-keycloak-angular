@@ -20,7 +20,6 @@ const keycloakOptions: KeycloakOptions = {
   config: keycloakConfig,
   initOptions: keycloakInitOptions,
   enableBearerInterceptor: true,
-  loadUserProfileAtStartUp: true,
 };
 
 export const environment = {

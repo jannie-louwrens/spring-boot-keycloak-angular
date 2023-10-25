@@ -6,14 +6,16 @@ import {
   userIcon,
   storeIcon,
   shoppingCartIcon,
+  checkCircleIcon,
   shoppingBagIcon,
+  pencilIcon,
+  angleIcon,
+  infoCircleIcon,
   trashIcon,
   administratorIcon,
   logoutIcon,
   usersIcon,
   fileGroupIcon,
-  plusIcon,
-  minusIcon,
 } from "@cds/core/icon";
 
 @NgModule({
@@ -27,12 +29,14 @@ ClarityIcons.addIcons(
   userIcon,
   storeIcon,
   shoppingCartIcon,
+  checkCircleIcon,
   shoppingBagIcon,
+  pencilIcon,
+  angleIcon,
+  infoCircleIcon,
   trashIcon,
   administratorIcon,
   logoutIcon,
   usersIcon,
-  fileGroupIcon,
-  plusIcon,
-  minusIcon
+  fileGroupIcon
 );
