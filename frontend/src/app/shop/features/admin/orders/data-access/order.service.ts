@@ -4,11 +4,11 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 
 import { Order } from "./order";
 
+const headers = new HttpHeaders().set("Content-Type", "application/json");
+const apiUrl = "/shop/api/orders";
+
 @Injectable()
 export class OrderService {
-  private ordersApiUrl = "/shop/api/orders";
-  private headers = new HttpHeaders().set("Content-Type", "application/json");
-
   private customerSubject = new BehaviorSubject<string>(null);
   private readonly customerSource$ = this.customerSubject.asObservable();
 
@@ -18,39 +18,28 @@ export class OrderService {
     this.customerSubject.next(customerId);
   }
 
-  public orders$ = this.http.get<Order[]>(this.ordersApiUrl, {
-    headers: this.headers,
-  });
-
   public ordersByCustomer$ = this.customerSource$.pipe(
     switchMap((customerId) => {
       const params = new HttpParams().set("customerId", customerId);
-      return this.http.get<Order[]>(this.ordersApiUrl, {
-        headers: this.headers,
-        params,
-      });
+      return this.http.get<Order[]>(apiUrl, { headers, params });
     })
   );
 
   getOrdersByCustomer(customerId: string): Observable<Order[]> {
     const params = new HttpParams().set("customerId", customerId);
-    return this.http.get<Order[]>(this.ordersApiUrl, {
-      headers: this.headers,
-      params,
-    });
+    return this.http.get<Order[]>(apiUrl, { headers, params });
   }
+
+  // getOrders(): Observable<Order[]> {
+  //   return this.http.get<Order[]>(apiUrl, { headers });
+  // }
 
   createOrder(customerId: string, order: Order): Observable<Order> {
     const params = new HttpParams().set("customerId", customerId);
-    return this.http.post<Order>(this.ordersApiUrl, order, {
-      headers: this.headers,
-      params,
-    });
+    return this.http.post<Order>(apiUrl, order, { headers, params });
   }
 
   updateOrder(id: string, order: Order): Observable<Order> {
-    return this.http.put<Order>(`${this.ordersApiUrl}/${id}`, order, {
-      headers: this.headers,
-    });
+    return this.http.put<Order>(`${apiUrl}/${id}`, order, { headers });
   }
 }

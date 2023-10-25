@@ -1,65 +1,106 @@
-<div class="clr-row">
-  <div class="clr-col-12">
-    <div class="card">
-      <h3 class="card-header">Shopping Cart</h3>
-      <div class="card-block" *ngIf="ordersByCustomer$ | async as orders">
-        <div class="clr-row">
-          <div class="clr-col-lg-8 clr-col-12">
-            <div class="card-text">
-              <div class="card-block" *ngFor="let order of orders">
-                <div class="card-text">
-                  <div class="clr-row clr-align-items-center">
-                    <div class="clr-col-lg-5 clr-col-12">
-                      <div class="clr-row">
-                        <h6 class="card-title">{{ order.productCatalog }}</h6>
-                      </div>
-                      <div class="clr-row">{{ order.product }}</div>
-                    </div>
-                    <div class="clr-col-lg-2 clr-col-12">
-                      <div class="clr-row">{{ order.quantity }}</div>
-                    </div>
-                    <div class="clr-col-lg-2 clr-col-12">
-                      <div class="clr-row">
-                        {{ order.unitPrice | number: "1.2-2" }}
-                      </div>
-                    </div>
-                    <div class="clr-col-lg-2 clr-col-12">
-                      <div class="clr-row">
-                        {{ order.quantity * order.unitPrice | number: "1.2-2" }}
-                      </div>
-                    </div>
-                    <div class="clr-col-lg-1 clr-col-12">
-                      <div class="clr-row">
-                        <clr-tooltip
-                          ><cds-icon
-                            shape="trash"
-                            status="danger"
-                            clrTooltipTrigger
-                            (click)="onDeleteOrder(order)"
-                          ></cds-icon>
-                          <clr-tooltip-content clrPosition="top-left"
-                            >Delete Item</clr-tooltip-content
-                          >
-                        </clr-tooltip>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="clr-col-lg-4 clr-col-12">
-            <h3 class="card-title">Summary</h3>
-            <div class="card-text">
-              <strong>Items: </strong>{{ calcItems(orders) }}
-            </div>
-            <div class="card-text">
-              <strong>Total: </strong>
-              {{ calcTotal(orders) | number: "1.2-2" }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<table class="table" *ngIf="ordersByCustomer$ | async as orders">
+  <caption>
+    <cds-icon shape="shopping-bag" size="lg"></cds-icon>
+    Shopping Basket
+  </caption>
+  <thead>
+    <tr>
+      <th scope="col" class="left">Product</th>
+      <th scope="col" class="left">Product Catalog</th>
+      <th scope="col" style="width: 100px">Date</th>
+      <th scope="col" style="width: 100px">Quantity</th>
+      <th scope="col" style="width: 100px">Unit Price</th>
+      <th scope="col" style="width: 100px">Total</th>
+      <th style="width: 25px">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngIf="!!orders && orders.length == 0">
+      <td colspan="7" class="table-light">
+        <strong>No orders found</strong>
+      </td>
+    </tr>
+    <tr *ngFor="let order of orders">
+      <td class="left">{{ order.product }}</td>
+      <td class="left">{{ order.productCatalog }}</td>
+      <td>{{ order.orderDate | date: "yyyy-MM-dd" }}</td>
+      <td>{{ order.quantity }}</td>
+      <td>{{ order.unitPrice | number: "1.2-2" }}</td>
+      <td>
+        {{ order.quantity * order.unitPrice | number: "1.2-2" }}
+      </td>
+      <td>
+        <clr-tooltip
+          ><cds-icon
+            shape="pencil"
+            status="info"
+            clrTooltipTrigger
+            (click)="openEditOrderModal(order)"
+          ></cds-icon>
+          <clr-tooltip-content clrPosition="top-left"
+            >Edit Order</clr-tooltip-content
+          >
+        </clr-tooltip>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<clr-modal [(clrModalOpen)]="isOpenEditOrderModal" *ngIf="isOpenEditOrderModal">
+  <h5 class="modal-title">Edit Order</h5>
+  <div class="modal-body">
+    <form
+      clrForm
+      clrLayout="horizontal"
+      clrLabelSize="3"
+      [formGroup]="orderForm"
+      autocomplete="off"
+    >
+      <clr-input-container>
+        <label>Product</label>
+        <input clrInput type="text" formControlName="product" />
+      </clr-input-container>
+      <clr-input-container>
+        <label>Product Catalog</label>
+        <input clrInput type="text" formControlName="productCatalog" />
+      </clr-input-container>
+      <clr-date-container>
+        <label>Order Date</label>
+        <input type="date" clrDate formControlName="orderDate" required />
+      </clr-date-container>
+      <clr-input-container>
+        <label>Unit Price</label>
+        <input clrInput type="text" formControlName="unitPrice" />
+      </clr-input-container>
+      <clr-input-container>
+        <label>Quantity</label>
+        <input clrInput type="number" formControlName="quantity" />
+        <clr-control-error>Please enter a quantity!</clr-control-error>
+      </clr-input-container>
+      <clr-input-container>
+        <label>Total</label>
+        <input
+          clrInput
+          type="text"
+          value="{{
+            orderForm.controls.unitPrice.value *
+              orderForm.controls.quantity.value | number: '1.2-2'
+          }}"
+          disabled
+        />
+      </clr-input-container>
+    </form>
   </div>
-</div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="isOpenEditOrderModal = false">
+      Cancel
+    </button>
+    <button
+      class="btn btn-primary"
+      (click)="onUpdateOrder()"
+      [disabled]="this.orderForm.invalid"
+    >
+      Update
+    </button>
+  </div>
+</clr-modal>

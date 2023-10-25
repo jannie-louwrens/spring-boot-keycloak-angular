@@ -1,43 +1,85 @@
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { Component, NgModule } from "@angular/core";
-import { OrderFacadeService } from "./data-access/order-facade.service";
-import { SharedModule } from "src/app/shared/shared.module";
+import { Component, NgModule, OnInit } from "@angular/core";
+import { from } from "rxjs";
+import { mergeMap, tap } from "rxjs/operators";
+
+import { OrderService } from "./data-access/order.service";
+import { Order } from "./data-access/order";
+import { CustomerService } from "../customers/data-access/customer.service";
+import { CustomerInfo } from "../customers/data-access/customer.info";
 
 @Component({
   selector: "app-orders",
   template: `
-    <h3>Pending Orders</h3>
-    <clr-datagrid *ngIf="pendingOrders$ | async as orders">
-      <clr-dg-column>Customer</clr-dg-column>
-      <clr-dg-column>Product</clr-dg-column>
-      <clr-dg-column>Category</clr-dg-column>
-      <clr-dg-column>Order Date</clr-dg-column>
-      <clr-dg-column>Quantity</clr-dg-column>
-      <clr-dg-column>Unit Price</clr-dg-column>
-      <clr-dg-column>Total</clr-dg-column>
-
-      <clr-dg-row *ngFor="let order of orders">
-        <clr-dg-cell>{{ order.customerName }}</clr-dg-cell>
-        <clr-dg-cell>{{ order.product }}</clr-dg-cell>
-        <clr-dg-cell>{{ order.productCatalog }}</clr-dg-cell>
-        <clr-dg-cell>{{ order.orderDate | date: "yyyy-MM-dd" }}</clr-dg-cell>
-        <clr-dg-cell>{{ order.quantity }}</clr-dg-cell>
-        <clr-dg-cell>{{ order.unitPrice | number: "1.2-2" }}</clr-dg-cell>
-        <clr-dg-cell
-          >{{ order.quantity * order.unitPrice | number: "1.2-2" }}</clr-dg-cell
-        >
-      </clr-dg-row>
-
-      <clr-dg-footer>{{ orders.length }} Orders</clr-dg-footer>
-    </clr-datagrid>
+    <div *ngFor="let customer of customers">
+      <table class="table">
+        <caption>
+          <cds-icon shape="shopping-bag" size="lg"></cds-icon>
+          Orders for
+          {{
+        customer.firstName
+          }}
+          {{
+        customer.lastName
+          }}
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" class="left">Product</th>
+            <th scope="col" class="left">Product Catalog</th>
+            <th scope="col" style="width: 100px">Date</th>
+            <th scope="col" style="width: 100px">Quantity</th>
+            <th scope="col" style="width: 100px">Unit Price</th>
+            <th scope="col" style="width: 100px">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="!!customer.orders && customer.orders.length == 0">
+            <td colspan="7" class="table-light">
+              <strong>No orders found</strong>
+            </td>
+          </tr>
+          <tr *ngFor="let order of customer.orders">
+            <td class="left">{{ order.product }}</td>
+            <td class="left">{{ order.productCatalog }}</td>
+            <td>{{ order.orderDate | date: "yyyy-MM-dd" }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.unitPrice | number: "1.2-2" }}</td>
+            <td>
+              {{ order.quantity * order.unitPrice | number: "1.2-2" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   `,
   styles: [],
 })
-export class OrdersComponent {
-  readonly pendingOrders$ = this.orderFacadeService.ordersWithCustomer$;
+export class OrdersComponent implements OnInit {
+  customers: CustomerInfo[] = [];
 
-  constructor(private orderFacadeService: OrderFacadeService) {}
+  constructor(
+    private orderService: OrderService,
+    private customerService: CustomerService
+  ) {}
+
+  ngOnInit() {
+    this.customerService
+      .getCustomers()
+      .pipe(
+        tap((data) => (this.customers = data)),
+        mergeMap((customers) => from(customers)),
+        mergeMap((customer) => {
+          return this.orderService.getOrdersByCustomer(customer.username).pipe(
+            tap((orders: Order[]) => {
+              customer.orders = orders;
+            })
+          );
+        })
+      )
+      .subscribe();
+  }
 }
 
 @NgModule({
@@ -46,9 +88,7 @@ export class OrdersComponent {
     RouterModule.forChild([
       { path: "", pathMatch: "full", component: OrdersComponent },
     ]),
-    SharedModule,
   ],
   declarations: [OrdersComponent],
-  providers: [OrderFacadeService],
 })
 export class OrdersFeatureModule {}

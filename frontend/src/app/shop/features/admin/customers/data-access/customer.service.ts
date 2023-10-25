@@ -5,36 +5,25 @@ import { map } from "rxjs/operators";
 
 import { CustomerInfo } from "./customer.info";
 
+const headers = new HttpHeaders().set("Content-Type", "application/json");
+const apiUrl = "/shop/api/customers";
+
 @Injectable({
   providedIn: "root",
 })
 export class CustomerService {
-  private customersApiUrl = "/shop/api/customers";
-  private headers = new HttpHeaders().set("Content-Type", "application/json");
-
-  public customers$ = this.http.get<CustomerInfo[]>(this.customersApiUrl, {
-    headers: this.headers,
-  });
-
   constructor(private http: HttpClient) {}
 
   getCustomers(): Observable<CustomerInfo[]> {
-    return this.http.get<CustomerInfo[]>(this.customersApiUrl, {
-      headers: this.headers,
-    });
+    return this.http.get<CustomerInfo[]>(apiUrl, { headers });
   }
 
   getCustomerByUsername(username: string): Observable<CustomerInfo> {
     const params = new HttpParams().set("username", username);
-    return this.http
-      .get<CustomerInfo>(this.customersApiUrl, {
-        headers: this.headers,
-        params,
+    return this.http.get<CustomerInfo>(apiUrl, { headers, params }).pipe(
+      map((customers) => {
+        return customers[0];
       })
-      .pipe(
-        map((customers) => {
-          return customers[0];
-        })
-      );
+    );
   }
 }

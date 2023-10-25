@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule, Routes } from "@angular/router";
 import { AppAuthGuard } from "src/app/auth/app-auth.guard";
 import { SharedModule } from "src/app/shared/shared.module";
@@ -27,11 +28,27 @@ const routes: Routes = [
         canActivate: [AppAuthGuard],
         data: { roles: ["admin"] },
       },
+
+      {
+        path: "customerorders/:username",
+        loadChildren: () =>
+          import("./customer-orders/customer-orders.component").then(
+            (m) => m.CustomerOrdersFeatureModule
+          ),
+        canActivate: [AppAuthGuard],
+        data: { roles: ["admin"] },
+      },
     ],
   },
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), SharedModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class AdminFeatureModule {}

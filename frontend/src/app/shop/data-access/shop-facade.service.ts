@@ -26,8 +26,4 @@ export class ShopFacadeService {
   public logout(): void {
     this.authFacadeService.logout();
   }
-
-  public showErrorMessage(message: string): void {
-    this.alertService.error(message);
-  }
 }
