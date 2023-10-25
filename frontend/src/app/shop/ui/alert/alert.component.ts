@@ -1,13 +1,12 @@
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
 
-import { AlertService } from "../../data-access/alert.service";
-import { Message } from "../../data-access/message";
+import { AlertService } from "src/app/services/alert.service";
 
 @Component({
   selector: "app-alert",
   template: `
     <clr-alert
-      *ngIf="message"
+      *ngIf="message$ | async as message"
       [clrAlertType]="message.cssClass"
       [clrAlertAppLevel]="true"
       [clrAlertClosable]="false"
@@ -20,5 +19,7 @@ import { Message } from "../../data-access/message";
   styles: [],
 })
 export class AlertComponent {
-  @Input() message: Message;
+  message$ = this.alertService.message$;
+
+  constructor(private alertService: AlertService) {}
 }
