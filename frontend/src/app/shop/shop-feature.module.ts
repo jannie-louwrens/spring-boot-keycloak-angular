@@ -27,60 +27,14 @@ import { AlertService } from "./data-access/alert.service";
         [message]="message"
       ></app-alert>
       <app-header
-        [customerOrderCount]="customerOrderCount$ | async"
+        *ngIf="vm$ | async as vm"
+        [userProfile]="vm.userProfile"
+        [customerOrderCount]="vm.customerOrderCount"
+        (logout)="doLogout($event)"
       ></app-header>
 
       <div class="content-container">
-        <main class="content-area"><router-outlet></router-outlet></main>
-        <clr-vertical-nav
-          [clrVerticalNavCollapsible]="false"
-          [clr-nav-level]="2"
-          *ngIf="userProfile$ | async as userProfile"
-        >
-          <div class="clr-row clr-align-self-center">
-            <cds-icon shape="user" size="xxl"></cds-icon>
-          </div>
-          <div class="clr-row  clr-align-self-center">
-            <h4>{{ userProfile.firstName }} {{ userProfile.lastName }}</h4>
-          </div>
-          <div class="clr-row  clr-align-self-center">
-            {{ userProfile.username }}
-          </div>
-
-          <div class="nav-divider"></div>
-
-          <a clrVerticalNavLink routerLink="shopping" routerLinkActive="active"
-            ><cds-icon shape="shopping-bag" clrVerticalNavIcon></cds-icon>
-            Shopping
-          </a>
-          <clr-vertical-nav-group
-            routerLinkActive="active"
-            *ngIf="userProfile.isAdministrator"
-          >
-            <cds-icon shape="administrator" clrVerticalNavIcon></cds-icon>
-            Administrator
-            <clr-vertical-nav-group-children>
-              <a
-                clrVerticalNavLink
-                routerLink="/admin/customers"
-                routerLinkActive="active"
-                ><cds-icon shape="users" clrVerticalNavIcon></cds-icon>
-                Customers
-              </a>
-              <a
-                clrVerticalNavLink
-                routerLink="/admin/orders"
-                routerLinkActive="active"
-                ><cds-icon shape="file-group" clrVerticalNavIcon></cds-icon>
-                Orders
-              </a>
-            </clr-vertical-nav-group-children>
-          </clr-vertical-nav-group>
-
-          <a clrVerticalNavLink (click)="doLogout(true)"
-            ><cds-icon shape="logout" clrVerticalNavIcon></cds-icon> Logout
-          </a>
-        </clr-vertical-nav>
+        <div class="content-area"><router-outlet></router-outlet></div>
       </div>
     </clr-main-container>
   `,
@@ -113,7 +67,7 @@ const routes: Routes = [
     component: ShopComponent,
     children: [
       {
-        path: "shopping",
+        path: "",
         loadChildren: () =>
           import("./features/store/store-feature.component").then(
             (m) => m.StoreFeatureModule
@@ -137,10 +91,9 @@ const routes: Routes = [
         canActivate: [AppAuthGuard],
         data: { roles: ["admin"] },
       },
-      { path: "", pathMatch: "full", redirectTo: "shopping" },
     ],
   },
-  { path: "**", redirectTo: "shopping" },
+  { path: "**", redirectTo: "/" },
 ];
 
 @NgModule({

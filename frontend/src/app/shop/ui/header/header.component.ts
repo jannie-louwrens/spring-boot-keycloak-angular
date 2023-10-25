@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from "@angular/core";
+import { UserProfile } from "src/app/auth/data-access/user-profile";
 
 @Component({
   selector: "app-header",
@@ -11,7 +18,24 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
           >
         </a>
       </div>
-
+      <div
+        class="header-nav"
+        [clr-nav-level]="1"
+        *ngIf="userProfile && userProfile.isAdministrator"
+      >
+        <a
+          class="nav-link nav-text"
+          routerLink="/admin/orders"
+          routerLinkActive="active"
+          >Orders</a
+        >
+        <a
+          class="nav-link nav-text"
+          routerLink="/admin/customers"
+          routerLinkActive="active"
+          >Customers</a
+        >
+      </div>
       <div class="header-actions" [style.padding]="'0 1.2rem'">
         <a
           class="nav-link nav-icon"
@@ -30,6 +54,30 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
             *ngIf="customerOrderCount > 0"
           ></cds-icon>
         </a>
+        <clr-dropdown *ngIf="userProfile">
+          <button clrDropdownTrigger>
+            <cds-icon shape="user" size="md"></cds-icon>
+            <cds-icon shape="angle" direction="down" size="sm"></cds-icon>
+          </button>
+          <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
+            <label class="dropdown-header"
+              >{{ userProfile.firstName }}
+              {{ userProfile.lastName }}
+            </label>
+            <label class="dropdown-header">
+              <small class="text-secondary">{{ userProfile.username }}</small>
+            </label>
+            <div class="dropdown-divider" role="separator"></div>
+            <div clrDropdownItem>
+              <a
+                class="dropdown-item"
+                (click)="doLogout()"
+                style="cursor: pointer"
+                >Log out</a
+              >
+            </div>
+          </clr-dropdown-menu>
+        </clr-dropdown>
       </div>
     </clr-header>
   `,
@@ -37,7 +85,13 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  @Input() userProfile: UserProfile;
   @Input() customerOrderCount: number = 0;
+  @Output() logout = new EventEmitter<boolean>();
 
   isCollapsed = true;
+
+  doLogout() {
+    this.logout.emit(true);
+  }
 }
