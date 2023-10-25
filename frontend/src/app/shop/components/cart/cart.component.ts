@@ -1,15 +1,12 @@
-import { CommonModule } from "@angular/common";
-import { RouterModule } from "@angular/router";
-import { Component, NgModule, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DatePipe } from "@angular/common";
 
-import { Order } from "../../models/order";
-import { CustomerInfo } from "../../models/customer.info";
+import { Order } from "../../../models/order";
+import { CustomerInfo } from "../../../models/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
 import { AlertService } from "src/app/services/alert.service";
-import { SharedModule } from "src/app/shared/shared.module";
 
 @Component({
   selector: "app-cart",
@@ -71,15 +68,3 @@ export class CartComponent implements OnInit {
     );
   }
 }
-
-@NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild([
-      { path: "", pathMatch: "full", component: CartComponent },
-    ]),
-    SharedModule,
-  ],
-  declarations: [CartComponent],
-})
-export class CartFeatureModule {}

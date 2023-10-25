@@ -4,19 +4,17 @@ import {
   SimpleChange,
   Input,
   OnInit,
-  NgModule,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CommonModule, DatePipe } from "@angular/common";
+import { DatePipe } from "@angular/common";
 
-import { ProductService } from "../../services/product.service";
-import { Product } from "../../models/product";
-import { Order } from "../../models/order";
+import { ProductService } from "../../../services/product.service";
+import { Product } from "../../../models/product";
+import { Order } from "../../../models/order";
 import { Observable } from "rxjs";
 import { CustomerInfo } from "src/app/models/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
 import { AlertService } from "src/app/services/alert.service";
-import { SharedModule } from "src/app/shared/shared.module";
 
 @Component({
   selector: "app-product",
@@ -171,10 +169,3 @@ export class ProductComponent implements OnChanges, OnInit {
     );
   }
 }
-
-@NgModule({
-  imports: [CommonModule, SharedModule],
-  declarations: [ProductComponent],
-  exports: [ProductComponent],
-})
-export class ProductFeatureModule {}
