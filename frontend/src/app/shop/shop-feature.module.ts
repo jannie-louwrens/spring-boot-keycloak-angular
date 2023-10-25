@@ -4,46 +4,38 @@ import { RouterModule, Routes } from "@angular/router";
 import { AppAuthGuard } from "../app-auth.guard";
 
 import { SharedModule } from "../shared/shared.module";
-import { TwoDigitDecimalNumberDirective } from "./ui/directives/two-digit-decimal-number.directive";
+import { TwoDigitDecimalNumberDirective } from "./directives/two-digit-decimal-number.directive";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CustomerStore } from "../stores/customer.store";
-import { AlertComponent } from "./ui/alert/alert.component";
-import { HeaderComponent } from "./ui/header/header.component";
-import { AuthModule } from "../auth/auth.module";
 
 @Component({
   selector: "app-store-front",
   template: `
-    <clr-main-container>
-      <app-alert></app-alert>
-      <app-header></app-header>
-
-      <div class="content-container">
-        <div class="content-area"><router-outlet></router-outlet></div>
-      </div>
-    </clr-main-container>
+    <div class="content-container">
+      <div class="content-area"><router-outlet></router-outlet></div>
+    </div>
   `,
   styles: [],
 })
-export class ShopComponent {}
+export class StoreFrontComponent {}
 
 const routes: Routes = [
   {
     path: "",
-    component: ShopComponent,
+    component: StoreFrontComponent,
     children: [
       {
         path: "",
         loadChildren: () =>
-          import(
-            "./features/product-catalog/product-catalog-feature.component"
-          ).then((m) => m.ProductCatalogFeatureModule),
+          import("./product-catalog/product-catalog-feature.component").then(
+            (m) => m.ProductCatalogFeatureModule
+          ),
         canActivate: [AppAuthGuard],
       },
       {
         path: "customers",
         loadChildren: () =>
-          import("./features/customers/customers-feature.component").then(
+          import("./customers/customers-feature.component").then(
             (m) => m.CustomersFeatureModule
           ),
         canActivate: [AppAuthGuard],
@@ -52,7 +44,7 @@ const routes: Routes = [
       {
         path: "orders",
         loadChildren: () =>
-          import("./features/orders/orders-feature.component").then(
+          import("./orders/orders-feature.component").then(
             (m) => m.OrdersFeatureModule
           ),
         canActivate: [AppAuthGuard],
@@ -61,7 +53,7 @@ const routes: Routes = [
       {
         path: "customerorders/:username",
         loadChildren: () =>
-          import("./features/customer-orders/customer-orders.component").then(
+          import("./customer-orders/customer-orders.component").then(
             (m) => m.CustomerOrdersFeatureModule
           ),
         canActivate: [AppAuthGuard],
@@ -70,7 +62,7 @@ const routes: Routes = [
       {
         path: "cart",
         loadChildren: () =>
-          import("./features/cart/cart-feature.component").then(
+          import("./cart/cart-feature.component").then(
             (m) => m.CartFeatureModule
           ),
         canActivate: [AppAuthGuard],
@@ -81,19 +73,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    ShopComponent,
-    TwoDigitDecimalNumberDirective,
-    HeaderComponent,
-    AlertComponent,
-  ],
+  declarations: [StoreFrontComponent, TwoDigitDecimalNumberDirective],
   imports: [
     CommonModule,
     RouterModule.forRoot(routes),
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    AuthModule,
   ],
   providers: [DatePipe, CustomerStore],
   exports: [RouterModule],
