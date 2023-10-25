@@ -9,9 +9,9 @@ This is the source code for my article on [how to securing a Angular frontend an
   - Keycloak 8.0.1.Final
   - Java 8
   - Spring Boot 2.2.2.RELEASE
-  - Angular 13.2.1
-  - Node.js 16.13.2
-  - Yarn 1.22.17
+  - Angular 8.2.14
+  - Node.js 12.13.1
+  - Yarn 1.19.2
 
 ## Installing and Configuring Keycloak
 Download the standalone server distribution from the [Keycloak website](https://www.keycloak.org/), unpack it and start the server. Follow the [Getting Started](https://www.keycloak.org/docs/latest/getting_started/index.html#creating-the-admin-account) instructions to setup the administrator account.
