@@ -1,7 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, TemplateRef } from "@angular/core";
 import { Observable } from "rxjs";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DatePipe } from "@angular/common";
+
+import { BsModalService } from "ngx-bootstrap/modal";
+import { BsModalRef } from "ngx-bootstrap/modal/bs-modal-ref.service";
 
 import { Order } from "../../../models/order";
 import { CustomerInfo } from "../../../models/customer.info";
@@ -12,19 +15,18 @@ import { AlertService } from "src/app/services/alert.service";
   selector: "app-cart",
   templateUrl: "./cart.component.html",
   styles: [],
-  providers: [DatePipe],
 })
 export class CartComponent implements OnInit {
   selectedOrder: Order;
   orderForm: FormGroup;
+  modalRef: BsModalRef;
   customer$: Observable<CustomerInfo>;
-  isOpenEditOrderModal: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
+    private modalService: BsModalService,
     private customerStore: CustomerStore,
-    private alertService: AlertService,
-    private datePipe: DatePipe
+    private alertService: AlertService
   ) {
     this.customerStore.init();
   }
@@ -33,8 +35,10 @@ export class CartComponent implements OnInit {
     this.customer$ = this.customerStore.getAll$();
   }
 
-  openEditOrderModal(order: Order) {
-    let dtr = this.datePipe.transform(order.orderDate, "y-MM-dd");
+  openEditOrderModal(template: TemplateRef<any>, order: Order) {
+    let dp = new DatePipe(navigator.language);
+    let p = "y-MM-dd"; // YYYY-MM-DD
+    let dtr = dp.transform(order.orderDate, p);
     this.orderForm = this.formBuilder.group({
       id: order.id,
       customerId: order.customerId,
@@ -45,7 +49,9 @@ export class CartComponent implements OnInit {
       quantity: [order.quantity, Validators.required],
     });
     this.selectedOrder = order;
-    this.isOpenEditOrderModal = true;
+    this.modalRef = this.modalService.show(template, {
+      ignoreBackdropClick: true,
+    });
   }
 
   // convenience getter for easy access to form fields
@@ -59,10 +65,8 @@ export class CartComponent implements OnInit {
       return;
     }
     let order = <Order>this.orderForm.getRawValue();
-    let dtr = this.datePipe.transform(order.orderDate, "y-MM-dd");
-    order.orderDate = new Date(dtr);
     this.customerStore.updateOrder(order);
-    this.isOpenEditOrderModal = false;
+    this.modalRef.hide();
     this.alertService.success(
       `${order.product} order quantity updated from ${this.selectedOrder.quantity} to ${order.quantity}.`
     );

@@ -17,10 +17,10 @@ import { SharedModule } from "./shared/shared.module";
   imports: [
     BrowserModule,
     HttpClientModule,
-    SharedModule,
     BrowserAnimationsModule,
     ShopModule,
     AuthModule,
+    SharedModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },

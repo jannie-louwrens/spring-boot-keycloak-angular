@@ -30,7 +30,7 @@ export class AlertService {
     this.keepAfterRouteChange = keepAfterRouteChange;
     this.messageSubject.next({
       text: message,
-      cssClass: "success",
+      cssClass: "alert alert-success",
     });
   }
 
@@ -38,11 +38,12 @@ export class AlertService {
     this.keepAfterRouteChange = keepAfterRouteChange;
     this.messageSubject.next({
       text: message,
-      cssClass: "danger",
+      cssClass: "alert alert-danger",
     });
   }
 
   clear() {
-    this.messageSubject.next(undefined);
+    // clear by calling subject.next() without parameters
+    this.messageSubject.next({});
   }
 }

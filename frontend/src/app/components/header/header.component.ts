@@ -7,7 +7,17 @@ import { CustomerStore } from "src/app/stores/customer.store";
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
-  styles: [],
+  styles: [
+    `
+      .count {
+        padding: 2px 3px;
+        z-index: 15;
+        position: relative;
+        left: -5px;
+        top: -12px;
+      }
+    `,
+  ],
 })
 export class HeaderComponent implements OnInit {
   isCollapsed = true;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { mergeMap, tap } from "rxjs/operators";
+import { flatMap, tap } from "rxjs/operators";
 
 import { OrderService } from "../../../services/order.service";
 import { Order } from "../../../models/order";
@@ -30,7 +30,7 @@ export class CustomerOrdersComponent implements OnInit {
       .getCustomerByUsername(username)
       .pipe(
         tap((data) => (this.customer = data)),
-        mergeMap((customer) => {
+        flatMap((customer) => {
           return this.orderService.getOrdersByCustomer(customer.username).pipe(
             tap((orders: Order[]) => {
               customer.orders = orders;

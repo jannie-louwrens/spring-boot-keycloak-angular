@@ -1,4 +1,3 @@
-import { StoreFrontComponent } from "./components/store-front/store-front.component";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AppAuthGuard } from "../app-auth.guard";
@@ -10,35 +9,30 @@ import { ProductCatalogComponent } from "./components/product-catalog/product-ca
 
 const routes: Routes = [
   {
-    path: "",
-    component: StoreFrontComponent,
-    children: [
-      {
-        path: "",
-        component: ProductCatalogComponent,
-        canActivate: [AppAuthGuard],
-      },
-      {
-        path: "customers",
-        component: CustomersComponent,
-        canActivate: [AppAuthGuard],
-        data: { roles: ["admin"] },
-      },
-      {
-        path: "orders",
-        component: OrdersComponent,
-        canActivate: [AppAuthGuard],
-        data: { roles: ["admin"] },
-      },
-      {
-        path: "customerorders/:username",
-        component: CustomerOrdersComponent,
-        canActivate: [AppAuthGuard],
-        data: { roles: ["admin"] },
-      },
-      { path: "cart", component: CartComponent, canActivate: [AppAuthGuard] },
-    ],
+    path: "productcatalog",
+    component: ProductCatalogComponent,
+    canActivate: [AppAuthGuard],
   },
+  {
+    path: "customers",
+    component: CustomersComponent,
+    canActivate: [AppAuthGuard],
+    data: { roles: ["admin"] },
+  },
+  {
+    path: "orders",
+    component: OrdersComponent,
+    canActivate: [AppAuthGuard],
+    data: { roles: ["admin"] },
+  },
+  {
+    path: "customerorders/:username",
+    component: CustomerOrdersComponent,
+    canActivate: [AppAuthGuard],
+    data: { roles: ["admin"] },
+  },
+  { path: "cart", component: CartComponent, canActivate: [AppAuthGuard] },
+  { path: "", redirectTo: "/productcatalog", pathMatch: "full" },
   { path: "**", redirectTo: "/" },
 ];
 

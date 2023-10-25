@@ -4,7 +4,12 @@ import { AlertService } from "src/app/services/alert.service";
 
 @Component({
   selector: "app-alert",
-  templateUrl: "./alert.component.html",
+  template: `<div
+    *ngIf="message$ | async as message"
+    [ngClass]="message.cssClass"
+  >
+    {{ message.text }}
+  </div>`,
   styles: [],
 })
 export class AlertComponent {

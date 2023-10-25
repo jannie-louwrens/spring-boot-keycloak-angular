@@ -1,284 +1,446 @@
-<table class="table">
-  <caption>
-    {{
-      productCatalogName
-    }}
-    Products
+<div class="card">
+  <div class="card-header bg-primary">
+    <h5 class="text-white float-start">{{ productCatalogName }} Products</h5>
     <button
-      class="btn btn-primary btn-sm"
-      (click)="openAddProductModal()"
+      type="button"
+      class="btn btn-light btn-sm float-end"
+      (click)="openAddProductModal(addProductTemplate)"
       *ngIf="(customer$ | async)?.isAdministrator"
     >
       Create Product
     </button>
-  </caption>
-  <thead>
-    <tr>
-      <th scope="col" class="left">Name</th>
-      <th scope="col" class="left">Description</th>
-      <th scope="col" style="width: 100px">Unit Price</th>
-      <th style="width: 95px">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngIf="products.length == 0">
-      <td colspan="4">
-        <div><strong>No products found</strong></div>
-      </td>
-    </tr>
-    <tr *ngFor="let product of products">
-      <td class="left">{{ product.name }}</td>
-      <td class="left">{{ product.description }}</td>
-      <td>{{ product.unitPrice | number: "1.2-2" }}</td>
-      <td>
-        <clr-dropdown>
-          <button class="btn btn-primary btn-sm" clrDropdownTrigger>
-            Action
-          </button>
-          <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
-            <div clrDropdownItem>
-              <a
-                class="dropdown-item"
-                (click)="openCreateOrderModal(product)"
-                style="cursor: pointer"
-                >Add to Cart</a
+  </div>
+  <div class="card-body">
+    <table class="table table-hover table-bordered">
+      <thead class="table-primary">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col" class="text-end" style="width: 100px">Unit Price</th>
+          <th style="width: 95px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="products.length == 0">
+          <td colspan="4" class="table-light">
+            <div class="text-center"><strong>No products found</strong></div>
+          </td>
+        </tr>
+        <tr *ngFor="let product of products">
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td class="text-end">{{ product.unitPrice | number: "1.2-2" }}</td>
+          <td class="text-center">
+            <div class="btn-group" dropdown>
+              <button
+                id="button-basic"
+                dropdownToggle
+                type="button"
+                class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                aria-controls="dropdown-basic"
               >
+                Action <span class="caret"></span>
+              </button>
+              <ul
+                id="dropdown-basic"
+                *dropdownMenu
+                class="dropdown-menu dropdown-menu-right"
+                role="menu"
+                aria-labelledby="button-basic"
+              >
+                <li role="menuitem">
+                  <a
+                    class="dropdown-item"
+                    (click)="openCreateOrderModal(createOrderTemplate, product)"
+                    style="cursor: pointer"
+                    >Add to Cart</a
+                  >
+                </li>
+                <div *ngIf="(customer$ | async)?.isAdministrator">
+                  <li class="divider dropdown-divider"></li>
+                  <li role="menuitem">
+                    <a
+                      class="dropdown-item"
+                      (click)="
+                        openEditProductModal(editProductTemplate, product)
+                      "
+                      style="cursor: pointer"
+                      >Edit Product</a
+                    >
+                  </li>
+                  <li role="menuitem">
+                    <a
+                      class="dropdown-item"
+                      (click)="
+                        openDeleteProductModal(deleteProductTemplate, product)
+                      "
+                      style="cursor: pointer"
+                      >Delete Product</a
+                    >
+                  </li>
+                </div>
+              </ul>
             </div>
-            <div *ngIf="(customer$ | async)?.isAdministrator">
-              <div class="dropdown-divider" role="separator"></div>
-              <div clrDropdownItem>
-                <a
-                  class="dropdown-item"
-                  (click)="openEditProductModal(product)"
-                  style="cursor: pointer"
-                  >Edit Product</a
-                >
-              </div>
-              <div clrDropdownItem>
-                <a
-                  class="dropdown-item"
-                  (click)="openDeleteProductModal(product)"
-                  style="cursor: pointer"
-                  >Delete Product</a
-                >
-              </div>
-            </div>
-          </clr-dropdown-menu>
-        </clr-dropdown>
-      </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-<clr-modal
-  [(clrModalOpen)]="isOpenAddProductModal"
-  *ngIf="isOpenAddProductModal"
->
-  <h3 class="modal-title">Add Product</h3>
+<ng-template #addProductTemplate>
+  <div class="modal-header bg-primary text-white">
+    <h4 class="modal-title pull-left">Add Product</h4>
+  </div>
   <div class="modal-body">
-    <form
-      clrForm
-      clrLayout="horizontal"
-      clrLabelSize="3"
-      [formGroup]="productForm"
-      autocomplete="off"
-    >
-      <clr-input-container>
-        <label>Name</label>
-        <input clrInput type="text" formControlName="name" />
-        <clr-control-error
-          >Please enter a name for the product!</clr-control-error
-        >
-      </clr-input-container>
-      <clr-textarea-container>
-        <label>Description</label>
-        <textarea
-          clrTextarea
-          formControlName="description"
-          cols="32"
-          rows="5"
-        ></textarea>
-        <clr-control-error
-          >Please enter a description for the product!</clr-control-error
-        >
-      </clr-textarea-container>
-      <clr-input-container>
-        <label>Unit Price</label>
+    <small class="text-danger">* required fields</small>
+    <form [formGroup]="productForm">
+      <div class="form-group">
+        <label for="name">Name<span class="text-danger">*</span></label>
         <input
-          clrInput
+          type="text"
+          formControlName="name"
+          class="form-control"
+          id="name"
+          required
+          [ngClass]="{ 'is-invalid': f.name.touched && f.name.errors }"
+        />
+        <div *ngIf="f.name.touched && f.name.errors" class="invalid-feedback">
+          <div *ngIf="f.name.errors.required">
+            Please enter a name for the product!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description"
+          >Description<span class="text-danger">*</span></label
+        >
+        <textarea
+          formControlName="description"
+          class="form-control"
+          id="description"
+          row="3"
+          cols="6"
+          required
+          [ngClass]="{
+            'is-invalid': f.description.touched && f.description.errors
+          }"
+        ></textarea>
+        <div
+          *ngIf="f.description.touched && f.description.errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f.description.errors.required">
+            Please enter a description for the product!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="unitPrice"
+          >Unit Price<span class="text-danger">*</span></label
+        >
+        <input
           type="text"
           formControlName="unitPrice"
+          class="form-control"
+          id="unitPrice"
+          required
           placeholder="0.00"
           appTwoDigitDecimalNumber
+          [ngClass]="{
+            'is-invalid': f.unitPrice.touched && f.unitPrice.errors
+          }"
         />
-        <clr-control-error
-          >Please enter the unit price of the product!</clr-control-error
+        <div
+          *ngIf="f.unitPrice.touched && f.unitPrice.errors"
+          class="invalid-feedback"
         >
-      </clr-input-container>
-      <clr-date-container>
-        <label>Effective Date</label>
-        <input type="date" clrDate formControlName="effectiveDate" required />
-        <clr-control-error
-          >Please enter the effective date of the product!</clr-control-error
+          <div *ngIf="f.unitPrice.errors.required">
+            Please enter the unit price of the product!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="effectiveDate"
+          >Effective Date<span class="text-danger">*</span></label
         >
-      </clr-date-container>
+        <input
+          type="date"
+          formControlName="effectiveDate"
+          class="form-control"
+          id="effectiveDate"
+          required
+          [ngClass]="{
+            'is-invalid': f.effectiveDate.touched && f.effectiveDate.errors
+          }"
+        />
+        <div
+          *ngIf="f.effectiveDate.touched && f.effectiveDate.errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f.effectiveDate.errors.required">
+            Please enter the effective date of the product!
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onAddProduct()"
+          [disabled]="productForm.invalid"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="modalRef.hide()"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   </div>
-  <div class="modal-footer">
-    <button class="btn btn-outline" (click)="isOpenAddProductModal = false">
-      Cancel
-    </button>
-    <button
-      class="btn btn-primary"
-      (click)="onAddProduct()"
-      [disabled]="productForm.invalid"
-    >
-      Save
-    </button>
-  </div>
-</clr-modal>
+</ng-template>
 
-<clr-modal
-  [(clrModalOpen)]="isOpenDeleteProductModal"
-  *ngIf="isOpenDeleteProductModal"
-  ><h3 class="modal-title">Delete Product</h3>
+<ng-template #deleteProductTemplate>
+  <div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Delete Product</h5>
+  </div>
   <div class="modal-body">
     Are you sure you want to delete {{ selectedProduct.name }}?
   </div>
   <div class="modal-footer">
     <button
-      class="btn btn-secondary"
-      (click)="isOpenDeleteProductModal = false"
+      type="button"
+      class="btn btn-primary"
+      (click)="onDeleteProduct(selectedProduct)"
     >
-      No
-    </button>
-    <button class="btn btn-primary" (click)="onDeleteProduct(selectedProduct)">
       Yes
     </button>
-  </div></clr-modal
->
+    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">
+      No
+    </button>
+  </div>
+</ng-template>
 
-<clr-modal
-  [(clrModalOpen)]="isOpenUpdateProductModal"
-  *ngIf="isOpenUpdateProductModal"
-  ><h3 class="modal-title">Edit Product</h3>
+<ng-template #editProductTemplate>
+  <div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Edit Product</h5>
+  </div>
   <div class="modal-body">
-    <form
-      clrForm
-      clrLayout="horizontal"
-      clrLabelSize="3"
-      [formGroup]="productForm"
-      autocomplete="off"
-    >
-      <clr-input-container>
-        <label>Name</label>
-        <input clrInput type="text" formControlName="name" />
-        <clr-control-error
-          >Please enter a name for the product!</clr-control-error
-        >
-      </clr-input-container>
-      <clr-textarea-container>
-        <label>Description</label>
-        <textarea
-          clrTextarea
-          formControlName="description"
-          cols="32"
-          rows="5"
-        ></textarea>
-        <clr-control-error
-          >Please enter a description for the product!</clr-control-error
-        >
-      </clr-textarea-container>
-      <clr-input-container>
-        <label>Unit Price</label>
+    <small class="text-danger">* required fields</small>
+    <form [formGroup]="productForm">
+      <div class="form-group">
+        <label for="name">Name<span class="text-danger">*</span></label>
         <input
-          clrInput
+          type="text"
+          formControlName="name"
+          class="form-control"
+          id="name"
+          required
+          [ngClass]="{ 'is-invalid': f.name.touched && f.name.errors }"
+        />
+        <div *ngIf="f.name.touched && f.name.errors" class="invalid-feedback">
+          <div *ngIf="f.name.errors.required">
+            Please enter a name for the product!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description"
+          >Description<span class="text-danger">*</span></label
+        >
+        <textarea
+          formControlName="description"
+          class="form-control"
+          id="description"
+          row="3"
+          cols="6"
+          required
+          [ngClass]="{
+            'is-invalid': f.description.touched && f.description.errors
+          }"
+        ></textarea>
+        <div
+          *ngIf="f.description.touched && f.description.errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f.description.errors.required">
+            Please enter a description for the product!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="unitPrice"
+          >Unit Price<span class="text-danger">*</span></label
+        >
+        <input
           type="text"
           formControlName="unitPrice"
+          class="form-control"
+          id="unitPrice"
+          required
           placeholder="0.00"
           appTwoDigitDecimalNumber
+          [ngClass]="{
+            'is-invalid': f.unitPrice.touched && f.unitPrice.errors
+          }"
         />
-        <clr-control-error
-          >Please enter the unit price of the product!</clr-control-error
+        <div
+          *ngIf="f.unitPrice.touched && f.unitPrice.errors"
+          class="invalid-feedback"
         >
-      </clr-input-container>
-      <clr-date-container>
-        <label>Effective Date</label>
-        <input type="date" clrDate formControlName="effectiveDate" required />
-        <clr-control-error
-          >Please enter the effective date of the product!</clr-control-error
+          <div *ngIf="f.unitPrice.errors.required">
+            Please enter the unit price of the product!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="effectiveDate"
+          >Effective Date<span class="text-danger">*</span></label
         >
-      </clr-date-container>
+        <input
+          type="date"
+          formControlName="effectiveDate"
+          class="form-control"
+          id="effectiveDate"
+          required
+          [ngClass]="{
+            'is-invalid': f.effectiveDate.touched && f.effectiveDate.errors
+          }"
+        />
+        <div
+          *ngIf="f.effectiveDate.touched && f.effectiveDate.errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f.effectiveDate.errors.required">
+            Please enter the effective date of the product!
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onUpdateProduct()"
+          [disabled]="productForm.invalid"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="modalRef.hide()"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   </div>
-  <div class="modal-footer">
-    <button
-      class="btn btn-secondary"
-      (click)="isOpenUpdateProductModal = false"
-    >
-      Cancel
-    </button>
-    <button
-      class="btn btn-primary"
-      (click)="onUpdateProduct()"
-      [disabled]="productForm.invalid"
-    >
-      Update
-    </button>
-  </div></clr-modal
->
+</ng-template>
 
-<clr-modal
-  [(clrModalOpen)]="isOpenCreateOrderModal"
-  *ngIf="isOpenCreateOrderModal"
-  ><h3 class="modal-title">Create Order</h3>
+<ng-template #createOrderTemplate>
+  <div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Create Order</h5>
+  </div>
   <div class="modal-body">
-    <form
-      clrForm
-      clrLayout="horizontal"
-      clrLabelSize="3"
-      [formGroup]="orderForm"
-      autocomplete="off"
-    >
-      <clr-input-container>
-        <label>Product</label>
-        <input clrInput type="text" formControlName="product" />
-      </clr-input-container>
-      <clr-input-container>
-        <label>Product Catalog</label>
-        <input clrInput type="text" formControlName="productCatalog" />
-      </clr-input-container>
-      <clr-date-container>
-        <label>Order Date</label>
-        <input type="date" clrDate formControlName="orderDate" required />
-      </clr-date-container>
-      <clr-input-container>
-        <label>Unit Price</label>
-        <input clrInput type="text" formControlName="unitPrice" />
-      </clr-input-container>
-      <clr-input-container>
-        <label>Quantity</label>
-        <input clrInput type="number" formControlName="quantity" />
-        <clr-control-error>Please enter a quantity!</clr-control-error>
-      </clr-input-container>
-      <clr-input-container>
-        <label>Total</label>
+    <small class="text-danger">* required fields</small>
+    <form [formGroup]="orderForm">
+      <div class="form-group">
+        <label for="name">Product</label>
         <input
-          clrInput
+          type="text"
+          formControlName="product"
+          class="form-control"
+          id="product"
+        />
+      </div>
+      <div class="form-group">
+        <label for="productCatalog">Product Catalog</label>
+        <input
+          type="text"
+          formControlName="productCatalog"
+          class="form-control"
+          id="productCatalog"
+        />
+      </div>
+      <div class="form-group">
+        <label for="orderDate">Date</label>
+        <input
+          type="text"
+          formControlName="orderDate"
+          class="form-control"
+          id="orderDate"
+        />
+      </div>
+      <div class="form-group">
+        <label for="unitPrice">Unit Price</label>
+        <input
+          type="text"
+          formControlName="unitPrice"
+          class="form-control"
+          id="unitPrice"
+        />
+      </div>
+      <div class="form-group">
+        <label for="quantity">Quantity<span class="text-danger">*</span></label>
+        <input
+          type="text"
+          formControlName="quantity"
+          class="form-control"
+          id="quantity"
+          required
+          placeholder="0"
+          [ngClass]="{
+            'is-invalid':
+              orderForm.controls.quantity.touched &&
+              orderForm.controls.quantity.errors
+          }"
+        />
+        <div
+          *ngIf="
+            orderForm.controls.quantity.touched &&
+            orderForm.controls.quantity.errors
+          "
+          class="invalid-feedback"
+        >
+          <div *ngIf="orderForm.controls.quantity.errors.required">
+            Please enter a quantity!
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="total">Total</label>
+        <input
           type="text"
           value="{{
             orderForm.controls.unitPrice.value *
               orderForm.controls.quantity.value | number: '1.2-2'
           }}"
+          class="form-control"
+          id="total"
           disabled
         />
-      </clr-input-container>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onCreateOrder()"
+          [disabled]="orderForm.invalid"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="modalRef.hide()"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   </div>
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="isOpenCreateOrderModal = false">
-      Cancel
-    </button>
-    <button class="btn btn-primary" (click)="onCreateOrder()">Save</button>
-  </div></clr-modal
->
+</ng-template>

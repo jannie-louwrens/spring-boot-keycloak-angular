@@ -12,8 +12,6 @@ import { ProductComponent } from "./components/product/product.component";
 import { TwoDigitDecimalNumberDirective } from "./directives/two-digit-decimal-number.directive";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CustomerStore } from "../stores/customer.store";
-import { StoreFrontComponent } from "./components/store-front/store-front.component";
-import { StoreFrontFacadeService } from "./services/store-front-facade.service";
 
 @NgModule({
   declarations: [
@@ -24,7 +22,6 @@ import { StoreFrontFacadeService } from "./services/store-front-facade.service";
     TwoDigitDecimalNumberDirective,
     CustomerOrdersComponent,
     CartComponent,
-    StoreFrontComponent,
   ],
   imports: [
     CommonModule,
@@ -33,7 +30,7 @@ import { StoreFrontFacadeService } from "./services/store-front-facade.service";
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [DatePipe, CustomerStore, StoreFrontFacadeService],
+  providers: [DatePipe, CustomerStore],
   exports: [ShopRoutingModule],
 })
 export class ShopModule {}

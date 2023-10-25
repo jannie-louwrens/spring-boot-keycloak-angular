@@ -3,10 +3,14 @@ import {
   OnChanges,
   SimpleChange,
   Input,
+  TemplateRef,
   OnInit,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DatePipe } from "@angular/common";
+
+import { BsModalService } from "ngx-bootstrap/modal";
+import { BsModalRef } from "ngx-bootstrap/modal/bs-modal-ref.service";
 
 import { ProductService } from "../../../services/product.service";
 import { Product } from "../../../models/product";
@@ -20,28 +24,25 @@ import { AlertService } from "src/app/services/alert.service";
   selector: "app-product",
   templateUrl: "./product.component.html",
   styles: [],
-  providers: [DatePipe],
 })
 export class ProductComponent implements OnChanges, OnInit {
   @Input() productCatalogId: string;
   @Input() productCatalogName: string;
+
+  modalRef: BsModalRef;
 
   products: Product[] = [];
   selectedProduct: Product;
   productForm: FormGroup;
   orderForm: FormGroup;
   customer$: Observable<CustomerInfo>;
-  isOpenAddProductModal: boolean = false;
-  isOpenUpdateProductModal: boolean = false;
-  isOpenDeleteProductModal: boolean = false;
-  isOpenCreateOrderModal: boolean = false;
 
   constructor(
     private productService: ProductService,
     private formBuilder: FormBuilder,
+    private modalService: BsModalService,
     private customerStore: CustomerStore,
-    private alertService: AlertService,
-    private datePipe: DatePipe
+    private alertService: AlertService
   ) {
     this.customerStore.init();
   }
@@ -64,24 +65,32 @@ export class ProductComponent implements OnChanges, OnInit {
       });
   }
 
-  openAddProductModal() {
-    let dtr = this.datePipe.transform(new Date(), "y-MM-dd");
+  openAddProductModal(template: TemplateRef<any>) {
+    let dp = new DatePipe(navigator.language);
+    let p = "y-MM-dd"; // YYYY-MM-DD
+    let dtr = dp.transform(new Date(), p);
     this.productForm = this.formBuilder.group({
       name: [null, Validators.required],
       description: [null, Validators.required],
       unitPrice: [null, Validators.required],
       effectiveDate: [dtr, Validators.required],
     });
-    this.isOpenAddProductModal = true;
+    this.modalRef = this.modalService.show(template, {
+      ignoreBackdropClick: true,
+    });
   }
 
-  openDeleteProductModal(product: Product) {
+  openDeleteProductModal(template: TemplateRef<any>, product: Product) {
     this.selectedProduct = product;
-    this.isOpenDeleteProductModal = true;
+    this.modalRef = this.modalService.show(template, {
+      ignoreBackdropClick: true,
+    });
   }
 
-  openEditProductModal(product: Product) {
-    let dtr = this.datePipe.transform(new Date(), "y-MM-dd");
+  openEditProductModal(template: TemplateRef<any>, product: Product) {
+    let dp = new DatePipe(navigator.language);
+    let p = "y-MM-dd"; // YYYY-MM-DD
+    let dtr = dp.transform(product.effectiveDate, p);
     this.productForm = this.formBuilder.group({
       id: product.id,
       productCatalogId: product.productCatalogId,
@@ -90,20 +99,25 @@ export class ProductComponent implements OnChanges, OnInit {
       unitPrice: [product.unitPrice, Validators.required],
       effectiveDate: [dtr, Validators.required],
     });
-    this.isOpenUpdateProductModal = true;
+    this.modalRef = this.modalService.show(template, {
+      ignoreBackdropClick: true,
+    });
   }
 
-  openCreateOrderModal(product: Product) {
-    let dtr = this.datePipe.transform(new Date(), "y-MM-dd");
+  openCreateOrderModal(template: TemplateRef<any>, product: Product) {
+    let dp = new DatePipe(navigator.language);
+    let p = "y-MM-dd"; // YYYY-MM-DD
+    let dtr = dp.transform(new Date(), p);
     this.orderForm = this.formBuilder.group({
       product: [{ value: product.name, disabled: true }],
       productCatalog: [{ value: this.productCatalogName, disabled: true }],
       unitPrice: [{ value: product.unitPrice, disabled: true }],
       orderDate: [{ value: dtr, disabled: true }],
       quantity: [null, Validators.required],
-      total: [null],
     });
-    this.isOpenCreateOrderModal = true;
+    this.modalRef = this.modalService.show(template, {
+      ignoreBackdropClick: true,
+    });
   }
 
   // convenience getter for easy access to form fields
@@ -118,13 +132,11 @@ export class ProductComponent implements OnChanges, OnInit {
     }
     let product = <Product>this.productForm.value;
     product.productCatalogId = this.productCatalogId;
-    let dtr = this.datePipe.transform(product.effectiveDate, "y-MM-dd");
-    product.effectiveDate = new Date(dtr);
     this.productService
       .createProduct(this.productCatalogId, product)
       .subscribe((res) => {
         this.getProductsByProductCatalog(this.productCatalogId);
-        this.isOpenAddProductModal = false;
+        this.modalRef.hide();
         this.alertService.success(`Added ${product.name} product.`);
       });
   }
@@ -135,11 +147,9 @@ export class ProductComponent implements OnChanges, OnInit {
       return;
     }
     let product = <Product>this.productForm.value;
-    let dtr = this.datePipe.transform(product.effectiveDate, "y-MM-dd");
-    product.effectiveDate = new Date(dtr);
     this.productService.updateProduct(product.id, product).subscribe((res) => {
       this.getProductsByProductCatalog(this.productCatalogId);
-      this.isOpenUpdateProductModal = false;
+      this.modalRef.hide();
       this.alertService.success(`Updated ${product.name} product.`);
     });
   }
@@ -149,7 +159,7 @@ export class ProductComponent implements OnChanges, OnInit {
     this.productService.updateProduct(product.id, product).subscribe((res) => {
       this.getProductsByProductCatalog(this.productCatalogId);
       this.selectedProduct = {} as Product;
-      this.isOpenDeleteProductModal = false;
+      this.modalRef.hide();
       this.alertService.success(`Deleted ${product.name} product.`);
     });
   }
@@ -160,10 +170,8 @@ export class ProductComponent implements OnChanges, OnInit {
       return;
     }
     let order = <Order>this.orderForm.getRawValue();
-    let dtr = this.datePipe.transform(order.orderDate, "y-MM-dd");
-    order.orderDate = new Date(dtr);
     this.customerStore.addOrder(order);
-    this.isOpenCreateOrderModal = false;
+    this.modalRef.hide();
     this.alertService.success(
       `Order placed for ${order.quantity} ${order.product}.`
     );

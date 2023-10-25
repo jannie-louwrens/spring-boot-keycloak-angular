@@ -1,15 +1,10 @@
-import { LOCALE_ID, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MyClarityDesignModule } from "./modules/my-clarity-design/my-clarity-design.module";
-import { registerLocaleData } from "@angular/common";
-import localeZA from "@angular/common/locales/en-ZA";
+import { MyNgxBootstrapModule } from "./modules/my-ngx-bootstrap/my-ngx-bootstrap.module";
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, MyClarityDesignModule],
-  exports: [MyClarityDesignModule],
-  providers: [{ provide: LOCALE_ID, useValue: "en-ZA" }],
+  imports: [CommonModule, MyNgxBootstrapModule],
+  exports: [MyNgxBootstrapModule],
 })
 export class SharedModule {}
-
-registerLocaleData(localeZA);
