@@ -5,7 +5,6 @@ import {
   Input,
   OnInit,
   NgModule,
-  ChangeDetectionStrategy,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { CommonModule, DatePipe } from "@angular/common";
@@ -24,7 +23,6 @@ import { SharedModule } from "src/app/shared/shared.module";
   templateUrl: "./product.component.html",
   styles: [],
   providers: [ProductService, DatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductComponent implements OnChanges, OnInit {
   @Input() productCatalogId: string;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import { Message } from "../../data-access/message";
 
@@ -17,7 +17,6 @@ import { Message } from "../../data-access/message";
     </clr-alert>
   `,
   styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertComponent {
   @Input() message: Message;

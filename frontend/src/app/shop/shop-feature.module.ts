@@ -1,6 +1,6 @@
 import { Component, NgModule } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
-import { RouterModule, Routes } from "@angular/router";
+import { Router, RouterModule, Routes } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
 import { AuthModule } from "../auth/auth.module";
@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AlertComponent } from "./ui/alert/alert.component";
 import { HeaderComponent } from "./ui/header/header.component";
 import { ShopFacadeService } from "./data-access/shop-facade.service";
-import { OrderService } from "./features/orders/data-access/order.service";
 
 @Component({
   selector: "app-store-front",
@@ -48,10 +47,14 @@ export class ShopComponent {
     }))
   );
 
-  constructor(private shopFacadeService: ShopFacadeService) {}
+  constructor(
+    private shopFacadeService: ShopFacadeService,
+    private router: Router
+  ) {}
 
-  doLogout(logout: boolean) {
-    this.shopFacadeService.logout();
+  async doLogout(logout: boolean) {
+    await this.shopFacadeService.logout();
+    await this.router.navigate(["/"]);
   }
 }
 
@@ -123,7 +126,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     AuthModule,
   ],
-  providers: [DatePipe, OrderService, ShopFacadeService],
+  providers: [DatePipe, ShopFacadeService],
   exports: [RouterModule],
 })
 export class ShopFeatureModule {}

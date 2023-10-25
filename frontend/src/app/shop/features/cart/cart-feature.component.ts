@@ -1,40 +1,40 @@
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { ChangeDetectionStrategy, Component, NgModule } from "@angular/core";
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
+import { Component, NgModule, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DatePipe } from "@angular/common";
 
 import { Order } from "../orders/data-access/order";
+import { CustomerInfo } from "../customers/data-access/customer.info";
+import { CustomerStore } from "src/app/stores/customer.store";
+import { AlertService } from "../../data-access/alert.service";
 import { SharedModule } from "src/app/shared/shared.module";
-import { CartFacadeService } from "./data-access/cart-facade.service";
-import { startWith } from "rxjs";
 
 @Component({
   selector: "app-cart",
   templateUrl: "./cart.component.html",
   styles: [],
   providers: [DatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CartComponent {
-  readonly ordersByCustomer$ = this.cartFacadeService.ordersByCustomer$.pipe(
-    startWith([])
-  );
+export class CartComponent implements OnInit {
   selectedOrder: Order;
   orderForm: FormGroup;
+  customer$: Observable<CustomerInfo>;
   isOpenEditOrderModal: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private cartFacadeService: CartFacadeService,
+    private customerStore: CustomerStore,
+    private alertService: AlertService,
     private datePipe: DatePipe
-  ) {}
+  ) {
+    this.customerStore.init();
+  }
+
+  ngOnInit() {
+    this.customer$ = this.customerStore.getAll$();
+  }
 
   openEditOrderModal(order: Order) {
     let dtr = this.datePipe.transform(order.orderDate, "y-MM-dd");
@@ -64,9 +64,9 @@ export class CartComponent {
     let order = <Order>this.orderForm.getRawValue();
     let dtr = this.datePipe.transform(order.orderDate, "y-MM-dd");
     order.orderDate = new Date(dtr);
-    this.cartFacadeService.updateOrder(order);
+    this.customerStore.updateOrder(order);
     this.isOpenEditOrderModal = false;
-    this.cartFacadeService.notifyUser(
+    this.alertService.success(
       `${order.product} order quantity updated from ${this.selectedOrder.quantity} to ${order.quantity}.`
     );
   }
@@ -79,10 +79,7 @@ export class CartComponent {
       { path: "", pathMatch: "full", component: CartComponent },
     ]),
     SharedModule,
-    FormsModule,
-    ReactiveFormsModule,
   ],
   declarations: [CartComponent],
-  providers: [CartFacadeService],
 })
 export class CartFeatureModule {}
