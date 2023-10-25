@@ -10,7 +10,7 @@ import {
 } from "@angular/forms";
 import { DatePipe } from "@angular/common";
 
-import { Order } from "../admin/orders/data-access/order";
+import { Order } from "../orders/data-access/order";
 import { SharedModule } from "src/app/shared/shared.module";
 import { CartFacadeService } from "./data-access/cart-facade.service";
 import { startWith } from "rxjs";

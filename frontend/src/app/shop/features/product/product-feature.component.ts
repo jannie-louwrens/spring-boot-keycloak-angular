@@ -12,9 +12,9 @@ import { CommonModule, DatePipe } from "@angular/common";
 
 import { ProductService } from "./data-access/product.service";
 import { Product } from "./data-access/product";
-import { Order } from "../admin/orders/data-access/order";
+import { Order } from "../orders/data-access/order";
 import { Observable } from "rxjs";
-import { CustomerInfo } from "../admin/customers/data-access/customer.info";
+import { CustomerInfo } from "../customers/data-access/customer.info";
 import { CustomerStore } from "src/app/stores/customer.store";
 import { AlertService } from "../../data-access/alert.service";
 import { SharedModule } from "src/app/shared/shared.module";

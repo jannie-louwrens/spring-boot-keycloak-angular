@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AlertService } from "src/app/shop/data-access/alert.service";
-import { Order } from "../../admin/orders/data-access/order";
-import { OrderService } from "../../admin/orders/data-access/order.service";
+import { Order } from "../../orders/data-access/order";
+import { OrderService } from "../../orders/data-access/order.service";
 
 @Injectable()
 export class CartFacadeService {

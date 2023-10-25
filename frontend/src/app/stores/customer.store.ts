@@ -5,9 +5,9 @@ import { from } from "rxjs";
 import { KeycloakService } from "keycloak-angular";
 
 import { Store } from "./store";
-import { CustomerInfo } from "../shop/features/admin/customers/data-access/customer.info";
-import { OrderService } from "../shop/features/admin/orders/data-access/order.service";
-import { Order } from "../shop/features/admin/orders/data-access/order";
+import { CustomerInfo } from "../shop/features/customers/data-access/customer.info";
+import { OrderService } from "../shop/features/orders/data-access/order.service";
+import { Order } from "../shop/features/orders/data-access/order";
 
 @Injectable()
 export class CustomerStore extends Store<CustomerInfo> {
