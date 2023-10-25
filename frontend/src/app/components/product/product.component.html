@@ -1,14 +1,8 @@
 <div class="card">
   <div class="card-header bg-primary">
-    <h5 class="text-white float-start">{{ productCatalogName }} Products</h5>
-    <button
-      type="button"
-      class="btn btn-light btn-sm float-end"
-      (click)="openAddProductModal(addProductTemplate)"
-      *ngIf="(customer$ | async)?.isAdministrator"
-    >
-      Create Product
-    </button>
+    <h5 class="text-white float-left">{{ productCatalogName }} Products</h5>
+    <button type="button" class="btn btn-light btn-sm float-right" 
+      (click)="openAddProductModal(addProductTemplate)" *ngIf="(customer$ | async)?.isAdministrator">Create Product</button>
   </div>
   <div class="card-body">
     <table class="table table-hover table-bordered">
@@ -16,8 +10,8 @@
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Description</th>
-          <th scope="col" class="text-end" style="width: 100px">Unit Price</th>
-          <th style="width: 95px">Actions</th>
+          <th scope="col" class="text-right" style="width:100px;">Unit Price</th>
+          <th style="width:95px;">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -29,58 +23,29 @@
         <tr *ngFor="let product of products">
           <td>{{ product.name }}</td>
           <td>{{ product.description }}</td>
-          <td class="text-end">{{ product.unitPrice | number: "1.2-2" }}</td>
+          <td class="text-right">{{ product.unitPrice | number:'1.2-2' }}</td>
           <td class="text-center">
             <div class="btn-group" dropdown>
-              <button
-                id="button-basic"
-                dropdownToggle
-                type="button"
-                class="btn btn-outline-secondary btn-sm dropdown-toggle"
-                aria-controls="dropdown-basic"
-              >
-                Action <span class="caret"></span>
-              </button>
-              <ul
-                id="dropdown-basic"
-                *dropdownMenu
-                class="dropdown-menu dropdown-menu-right"
-                role="menu"
-                aria-labelledby="button-basic"
-              >
-                <li role="menuitem">
-                  <a
-                    class="dropdown-item"
-                    (click)="openCreateOrderModal(createOrderTemplate, product)"
-                    style="cursor: pointer"
-                    >Add to Cart</a
-                  >
-                </li>
-                <div *ngIf="(customer$ | async)?.isAdministrator">
+                <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                        aria-controls="dropdown-basic">
+                  Action <span class="caret"></span>
+                </button>
+                <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu  dropdown-menu-right"
+                    role="menu" aria-labelledby="button-basic">
+                  <li role="menuitem">
+                    <a class="dropdown-item" (click)="openCreateOrderModal(createOrderTemplate, product)" style="cursor: pointer;">Add to Cart</a>
+                  </li>
+                  <div *ngIf="(customer$ | async)?.isAdministrator">
                   <li class="divider dropdown-divider"></li>
                   <li role="menuitem">
-                    <a
-                      class="dropdown-item"
-                      (click)="
-                        openEditProductModal(editProductTemplate, product)
-                      "
-                      style="cursor: pointer"
-                      >Edit Product</a
-                    >
+                    <a class="dropdown-item" (click)="openEditProductModal(editProductTemplate, product)" style="cursor: pointer;">Edit Product</a>
                   </li>
                   <li role="menuitem">
-                    <a
-                      class="dropdown-item"
-                      (click)="
-                        openDeleteProductModal(deleteProductTemplate, product)
-                      "
-                      style="cursor: pointer"
-                      >Delete Product</a
-                    >
+                    <a class="dropdown-item" (click)="openDeleteProductModal(deleteProductTemplate, product)" style="cursor: pointer;">Delete Product</a>
                   </li>
                 </div>
-              </ul>
-            </div>
+                </ul>
+              </div>
           </td>
         </tr>
       </tbody>
@@ -93,114 +58,44 @@
     <h4 class="modal-title pull-left">Add Product</h4>
   </div>
   <div class="modal-body">
-    <small class="text-danger">* required fields</small>
-    <form [formGroup]="productForm">
-      <div class="form-group">
-        <label for="name">Name<span class="text-danger">*</span></label>
-        <input
-          type="text"
-          formControlName="name"
-          class="form-control"
-          id="name"
-          required
-          [ngClass]="{ 'is-invalid': f.name.touched && f.name.errors }"
-        />
-        <div *ngIf="f.name.touched && f.name.errors" class="invalid-feedback">
-          <div *ngIf="f.name.errors.required">
-            Please enter a name for the product!
+      <small class="text-danger">* required fields</small>
+      <form [formGroup]="productForm">
+        <div class="form-group">
+          <label for="name">Name<span class="text-danger">*</span></label>
+          <input type="text" formControlName="name" class="form-control" id="name" required [ngClass]="{ 'is-invalid': f.name.touched && f.name.errors }">
+          <div *ngIf="f.name.touched && f.name.errors" class="invalid-feedback">
+            <div *ngIf="f.name.errors.required">Please enter a name for the product!</div>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="description"
-          >Description<span class="text-danger">*</span></label
-        >
-        <textarea
-          formControlName="description"
-          class="form-control"
-          id="description"
-          row="3"
-          cols="6"
-          required
-          [ngClass]="{
-            'is-invalid': f.description.touched && f.description.errors
-          }"
-        ></textarea>
-        <div
-          *ngIf="f.description.touched && f.description.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.description.errors.required">
-            Please enter a description for the product!
+        <div class="form-group">
+          <label for="description">Description<span class="text-danger">*</span></label>
+          <textarea formControlName="description" class="form-control" id="description" row="3" cols="6" required
+            [ngClass]="{ 'is-invalid': f.description.touched && f.description.errors }"></textarea>
+          <div *ngIf="f.description.touched && f.description.errors" class="invalid-feedback">
+            <div *ngIf="f.description.errors.required">Please enter a description for the product!</div>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="unitPrice"
-          >Unit Price<span class="text-danger">*</span></label
-        >
-        <input
-          type="text"
-          formControlName="unitPrice"
-          class="form-control"
-          id="unitPrice"
-          required
-          placeholder="0.00"
-          appTwoDigitDecimalNumber
-          [ngClass]="{
-            'is-invalid': f.unitPrice.touched && f.unitPrice.errors
-          }"
-        />
-        <div
-          *ngIf="f.unitPrice.touched && f.unitPrice.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.unitPrice.errors.required">
-            Please enter the unit price of the product!
+        <div class="form-group">
+          <label for="unitPrice">Unit Price<span class="text-danger">*</span></label>
+          <input type="text" formControlName="unitPrice" class="form-control" id="unitPrice" required placeholder="0.00"
+            appTwoDigitDecimalNumber [ngClass]="{ 'is-invalid': f.unitPrice.touched && f.unitPrice.errors }">
+          <div *ngIf="f.unitPrice.touched && f.unitPrice.errors" class="invalid-feedback">
+            <div *ngIf="f.unitPrice.errors.required">Please enter the unit price of the product!</div>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="effectiveDate"
-          >Effective Date<span class="text-danger">*</span></label
-        >
-        <input
-          type="date"
-          formControlName="effectiveDate"
-          class="form-control"
-          id="effectiveDate"
-          required
-          [ngClass]="{
-            'is-invalid': f.effectiveDate.touched && f.effectiveDate.errors
-          }"
-        />
-        <div
-          *ngIf="f.effectiveDate.touched && f.effectiveDate.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.effectiveDate.errors.required">
-            Please enter the effective date of the product!
+        <div class="form-group">
+          <label for="effectiveDate">Effective Date<span class="text-danger">*</span></label>
+          <input type="date" formControlName="effectiveDate" class="form-control" id="effectiveDate" required
+            [ngClass]="{ 'is-invalid': f.effectiveDate.touched && f.effectiveDate.errors }">
+          <div *ngIf="f.effectiveDate.touched && f.effectiveDate.errors" class="invalid-feedback">
+            <div *ngIf="f.effectiveDate.errors.required">Please enter the effective date of the product!</div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="onAddProduct()"
-          [disabled]="productForm.invalid"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="modalRef.hide()"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="onAddProduct()" [disabled]="productForm.invalid">Save</button>
+          <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Cancel</button>
+        </div>
+      </form>
   </div>
 </ng-template>
 
@@ -209,19 +104,11 @@
     <h5 class="modal-title">Delete Product</h5>
   </div>
   <div class="modal-body">
-    Are you sure you want to delete {{ selectedProduct.name }}?
+    Are you sure you want to delete {{selectedProduct.name}}?
   </div>
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="onDeleteProduct(selectedProduct)"
-    >
-      Yes
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">
-      No
-    </button>
+    <button type="button" class="btn btn-primary" (click)="onDeleteProduct(selectedProduct)">Yes</button>
+    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">No</button>
   </div>
 </ng-template>
 
@@ -234,108 +121,38 @@
     <form [formGroup]="productForm">
       <div class="form-group">
         <label for="name">Name<span class="text-danger">*</span></label>
-        <input
-          type="text"
-          formControlName="name"
-          class="form-control"
-          id="name"
-          required
-          [ngClass]="{ 'is-invalid': f.name.touched && f.name.errors }"
-        />
+        <input type="text" formControlName="name" class="form-control" id="name" required [ngClass]="{ 'is-invalid': f.name.touched && f.name.errors }">
         <div *ngIf="f.name.touched && f.name.errors" class="invalid-feedback">
-          <div *ngIf="f.name.errors.required">
-            Please enter a name for the product!
-          </div>
+          <div *ngIf="f.name.errors.required">Please enter a name for the product!</div>
         </div>
       </div>
       <div class="form-group">
-        <label for="description"
-          >Description<span class="text-danger">*</span></label
-        >
-        <textarea
-          formControlName="description"
-          class="form-control"
-          id="description"
-          row="3"
-          cols="6"
-          required
-          [ngClass]="{
-            'is-invalid': f.description.touched && f.description.errors
-          }"
-        ></textarea>
-        <div
-          *ngIf="f.description.touched && f.description.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.description.errors.required">
-            Please enter a description for the product!
-          </div>
+        <label for="description">Description<span class="text-danger">*</span></label>
+        <textarea formControlName="description" class="form-control" id="description" row="3" cols="6" required
+          [ngClass]="{ 'is-invalid': f.description.touched && f.description.errors }"></textarea>
+        <div *ngIf="f.description.touched && f.description.errors" class="invalid-feedback">
+          <div *ngIf="f.description.errors.required">Please enter a description for the product!</div>
         </div>
       </div>
       <div class="form-group">
-        <label for="unitPrice"
-          >Unit Price<span class="text-danger">*</span></label
-        >
-        <input
-          type="text"
-          formControlName="unitPrice"
-          class="form-control"
-          id="unitPrice"
-          required
-          placeholder="0.00"
-          appTwoDigitDecimalNumber
-          [ngClass]="{
-            'is-invalid': f.unitPrice.touched && f.unitPrice.errors
-          }"
-        />
-        <div
-          *ngIf="f.unitPrice.touched && f.unitPrice.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.unitPrice.errors.required">
-            Please enter the unit price of the product!
-          </div>
+        <label for="unitPrice">Unit Price<span class="text-danger">*</span></label>
+        <input type="text" formControlName="unitPrice" class="form-control" id="unitPrice" required placeholder="0.00"
+          appTwoDigitDecimalNumber [ngClass]="{ 'is-invalid': f.unitPrice.touched && f.unitPrice.errors }">
+        <div *ngIf="f.unitPrice.touched && f.unitPrice.errors" class="invalid-feedback">
+          <div *ngIf="f.unitPrice.errors.required">Please enter the unit price of the product!</div>
         </div>
       </div>
       <div class="form-group">
-        <label for="effectiveDate"
-          >Effective Date<span class="text-danger">*</span></label
-        >
-        <input
-          type="date"
-          formControlName="effectiveDate"
-          class="form-control"
-          id="effectiveDate"
-          required
-          [ngClass]="{
-            'is-invalid': f.effectiveDate.touched && f.effectiveDate.errors
-          }"
-        />
-        <div
-          *ngIf="f.effectiveDate.touched && f.effectiveDate.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.effectiveDate.errors.required">
-            Please enter the effective date of the product!
-          </div>
+        <label for="effectiveDate">Effective Date<span class="text-danger">*</span></label>
+        <input type="date" formControlName="effectiveDate" class="form-control" id="effectiveDate" required
+          [ngClass]="{ 'is-invalid': f.effectiveDate.touched && f.effectiveDate.errors }">
+        <div *ngIf="f.effectiveDate.touched && f.effectiveDate.errors" class="invalid-feedback">
+          <div *ngIf="f.effectiveDate.errors.required">Please enter the effective date of the product!</div>
         </div>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="onUpdateProduct()"
-          [disabled]="productForm.invalid"
-        >
-          Update
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="modalRef.hide()"
-        >
-          Cancel
-        </button>
+        <button type="button" class="btn btn-primary" (click)="onUpdateProduct()" [disabled]="productForm.invalid">Update</button>
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Cancel</button>
       </div>
     </form>
   </div>
@@ -346,101 +163,40 @@
     <h5 class="modal-title">Create Order</h5>
   </div>
   <div class="modal-body">
-    <small class="text-danger">* required fields</small>
-    <form [formGroup]="orderForm">
-      <div class="form-group">
-        <label for="name">Product</label>
-        <input
-          type="text"
-          formControlName="product"
-          class="form-control"
-          id="product"
-        />
-      </div>
-      <div class="form-group">
-        <label for="productCatalog">Product Catalog</label>
-        <input
-          type="text"
-          formControlName="productCatalog"
-          class="form-control"
-          id="productCatalog"
-        />
-      </div>
-      <div class="form-group">
-        <label for="orderDate">Date</label>
-        <input
-          type="text"
-          formControlName="orderDate"
-          class="form-control"
-          id="orderDate"
-        />
-      </div>
-      <div class="form-group">
-        <label for="unitPrice">Unit Price</label>
-        <input
-          type="text"
-          formControlName="unitPrice"
-          class="form-control"
-          id="unitPrice"
-        />
-      </div>
-      <div class="form-group">
-        <label for="quantity">Quantity<span class="text-danger">*</span></label>
-        <input
-          type="text"
-          formControlName="quantity"
-          class="form-control"
-          id="quantity"
-          required
-          placeholder="0"
-          [ngClass]="{
-            'is-invalid':
-              orderForm.controls.quantity.touched &&
-              orderForm.controls.quantity.errors
-          }"
-        />
-        <div
-          *ngIf="
-            orderForm.controls.quantity.touched &&
-            orderForm.controls.quantity.errors
-          "
-          class="invalid-feedback"
-        >
-          <div *ngIf="orderForm.controls.quantity.errors.required">
-            Please enter a quantity!
+      <small class="text-danger">* required fields</small>
+      <form [formGroup]="orderForm">
+          <div class="form-group">
+              <label for="name">Product</label>
+              <input type="text" formControlName="product" class="form-control" id="product">
           </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="total">Total</label>
-        <input
-          type="text"
-          value="{{
-            orderForm.controls.unitPrice.value *
-              orderForm.controls.quantity.value | number: '1.2-2'
-          }}"
-          class="form-control"
-          id="total"
-          disabled
-        />
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="onCreateOrder()"
-          [disabled]="orderForm.invalid"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="modalRef.hide()"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+          <div class="form-group">
+              <label for="productCatalog">Product Catalog</label>
+              <input type="text" formControlName="productCatalog" class="form-control" id="productCatalog">
+          </div>
+          <div class="form-group">
+              <label for="orderDate">Date</label>
+              <input type="text" formControlName="orderDate" class="form-control" id="orderDate">
+          </div>
+          <div class="form-group">
+              <label for="unitPrice">Unit Price</label>
+              <input type="text" formControlName="unitPrice" class="form-control" id="unitPrice">
+          </div>
+          <div class="form-group">
+              <label for="quantity">Quantity<span class="text-danger">*</span></label>
+              <input type="text" formControlName="quantity" class="form-control" id="quantity" required placeholder="0"
+                [ngClass]="{ 'is-invalid': orderForm.controls.quantity.touched && orderForm.controls.quantity.errors }">
+              <div *ngIf="orderForm.controls.quantity.touched && orderForm.controls.quantity.errors" class="invalid-feedback">
+                <div *ngIf="orderForm.controls.quantity.errors.required">Please enter a quantity!</div>
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="total">Total</label>
+              <input type="text" value="{{(orderForm.controls.unitPrice.value * orderForm.controls.quantity.value) | number:'1.2-2'}}" class="form-control" id="total" disabled>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="onCreateOrder()" [disabled]="orderForm.invalid">Save</button>
+              <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Cancel</button>
+            </div>
+      </form>
   </div>
 </ng-template>
