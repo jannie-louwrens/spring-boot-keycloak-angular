@@ -8,40 +8,34 @@ import { Router, NavigationStart } from '@angular/router';
 export class AlertService {
 
   private subject = new Subject<any>();
-  private keepAfterRouteChange = false;
+  private keepAfterNavigationChange = false;
 
   constructor(private router: Router) {
-    // clear alert message on route change unless 'keepAfterRouteChange' flag is true
+    // clear alert message on route change
     router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        if (this.keepAfterRouteChange) {
+        if (this.keepAfterNavigationChange) {
           // only keep for a single location change
-          this.keepAfterRouteChange = false;
+          this.keepAfterNavigationChange = false;
         } else {
-          // clear alert message
-          this.clear();
+          // clear alert
+          this.subject.next();
         }
       }
     });
   }
 
-  success(message: string, keepAfterRouteChange = false) {
-    this.keepAfterRouteChange = keepAfterRouteChange;
+  success(message: string, keepAfterNavigationChange = false) {
+    this.keepAfterNavigationChange = keepAfterNavigationChange;
     this.subject.next({ type: 'success', text: message });
   }
 
-  error(message: string, keepAfterRouteChange = false) {
-    this.keepAfterRouteChange = keepAfterRouteChange;
+  error(message: string, keepAfterNavigationChange = false) {
+    this.keepAfterNavigationChange = keepAfterNavigationChange;
     this.subject.next({ type: 'error', text: message });
   }
 
-  getAlert(): Observable<any> {
+  getMessage(): Observable<any> {
     return this.subject.asObservable();
   }
-
-  clear() {
-    // clear by calling subject.next() without parameters
-    this.subject.next();
-  }
-
 }

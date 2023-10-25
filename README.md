@@ -6,12 +6,12 @@ This is the source code for my article on [how to securing a Angular frontend an
 
 ## Requirements
 
-  - Keycloak 8.0.1.Final
+  - Keycloak 4.6.0.Final
   - Java 8
-  - Spring Boot 2.2.2.RELEASE
-  - Angular 8.2.14
-  - Node.js 12.13.1
-  - Yarn 1.19.2
+  - Spring Boot 2.0.7.RELEASE
+  - Angular 7.1.4
+  - Node.js 10.15.0
+  - Yarn 1.12.3
 
 ## Installing and Configuring Keycloak
 Download the standalone server distribution from the [Keycloak website](https://www.keycloak.org/), unpack it and start the server. Follow the [Getting Started](https://www.keycloak.org/docs/latest/getting_started/index.html#creating-the-admin-account) instructions to setup the administrator account.
@@ -39,10 +39,10 @@ Highlight the `view-users` option in the **Available Roles** block and then clic
 #### 4. Create the following users:
 | Username | Password | First Name | Last Name | Email | Roles |
 | ------ | ------ | ------ | ------ | ------ | ------ |
-| metalgear | password | Bob | Knight | `bob.knight@example.com` | ADMIN, USER |
-| grilldad | password | Jim | Long | `jim.long@example.com` | USER |
-| mythbuster | password | Kate | Wilson | `kate.wilson@example.com` | USER |
-| spacehunter | password | Victor | Brown | `victor.brown@example.com` | USER |
+| metalgear | password | Bob | Knight | bob.knight@example.com | ADMIN, USER |
+| grilldad | password | Jim | Long | jim.long@example.com | USER |
+| mythbuster | password | Kate | Wilson | kate.wilson@example.com | USER |
+| spacehunter | password | Victor | Brown | victor.brown@example.com | USER |
 > It is most important that you enter the username as provided in the table, because they are used in the Spring backend to link the customer orders with the user.
 
 ## Start the Spring Boot Application

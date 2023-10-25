@@ -28,15 +28,21 @@ export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       try {
-        await keycloak.init(environment.keycloakOptions);
-        console.log('Keycloak is initialized');
+        await keycloak.init({
+          config: environment.keycloak,
+          initOptions: {
+            onLoad: 'login-required',
+            checkLoginIframe: false
+          },
+          enableBearerInterceptor: true
+        });
         resolve();
       } catch (error) {
-        console.log('Error thrown in init ' + error);
+        console.log("Error thrown in init "+error);
         reject(error);
       }
     });
-  };
+  };            
 }
 
 @NgModule({
@@ -56,7 +62,7 @@ export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FormsModule,
+    FormsModule, 
     ReactiveFormsModule,
     KeycloakAngularModule,
     CollapseModule.forRoot(),

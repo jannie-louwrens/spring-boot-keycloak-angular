@@ -5,7 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AlertService } from '../services/alert.service';
 
-@Injectable()
+@Injectable() 
 export class HttpErrorInterceptor implements HttpInterceptor {
 
     constructor(private alertService: AlertService) { }
@@ -13,7 +13,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(
             catchError((response: HttpErrorResponse) => {
-                this.alertService.error(`${response.status}: ${response.message}`);
+                this.alertService.error(`${response.error.status}: ${response.error.message} ${response.error.error}`);
                 return throwError(response);
             })
         );
